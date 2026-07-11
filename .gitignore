@@ -1,0 +1,18 @@
+# Claude Code lokale Einstellungen (nicht fürs Team gedacht)
+.claude/settings.local.json
+
+# Typische PHP/Moodle-Build-Artefakte
+vendor/
+node_modules/
+*.log
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+
+# Internal planning/context docs - kept locally, not published to GitHub
+CLAUDE.md
+SPEC-admindashboard.md
+claude-code-prompt-admindashboard.md
