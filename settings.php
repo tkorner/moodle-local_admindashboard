@@ -18,10 +18,16 @@
  * Registers the dashboard report page and the plugin configuration page.
  *
  * The dashboard itself is an admin_externalpage (Site administration >
- * Reports) because it renders a live view, not configuration values.
- * A separate admin_settingpage under Local plugins holds the actual
- * configuration (time range, active school codes) - populated in a
- * later implementation step, not part of this scaffold.
+ * Reports) because it renders a live view, not configuration values. It is
+ * registered unconditionally (not behind $hassiteconfig) - only its own
+ * 'local/admindashboard:view' capability should gate access, matching
+ * report_security/settings.php's exact same pattern: a plain "reports"
+ * page has no reason to additionally require moodle/site:config. Wrapping
+ * it in $hassiteconfig too (an earlier mistake here) meant a Manager with
+ * local/admindashboard:view but without moodle/site:config could never
+ * actually reach index.php, even though the capability model promises
+ * otherwise. The admin_settingpage below DOES need $hassiteconfig, since it
+ * holds real config fields that only site:config should be able to edit.
  *
  * @package   local_admindashboard
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
@@ -30,14 +36,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if ($hassiteconfig) {
-    $ADMIN->add('reports', new admin_externalpage(
-        'local_admindashboard',
-        get_string('pluginname', 'local_admindashboard'),
-        new moodle_url('/local/admindashboard/index.php'),
-        'local/admindashboard:view'
-    ));
+$ADMIN->add('reports', new admin_externalpage(
+    'local_admindashboard',
+    get_string('pluginname', 'local_admindashboard'),
+    new moodle_url('/local/admindashboard/index.php'),
+    'local/admindashboard:view'
+));
 
+if ($hassiteconfig) {
     $settings = new admin_settingpage(
         'local_admindashboard_settings',
         get_string('pluginname', 'local_admindashboard')
