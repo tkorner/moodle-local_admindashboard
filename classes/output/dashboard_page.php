@@ -182,11 +182,7 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
     /**
      * Builds the four health signal tiles.
      *
-     * @return array of stdClass: label, value, url, severityclass
-     *         (bootstrap contextual colour suffix: 'success', 'warning', or
-     *         'danger' - mustache can't compare strings, so the class name
-     *         itself is computed here rather than a raw 'ok'/'warning'/
-     *         'error' severity flag)
+     * @return array of stdClass, see make_signal_tile()
      */
     private function export_health_signals(): array {
         $duplicates = health_signals::duplicate_emails();
@@ -209,7 +205,7 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
             ),
             $this->make_signal_tile(
                 get_string('signal_security', 'local_admindashboard'),
-                get_string('signal_security_value', 'local_admindashboard', $security),
+                $this->format_security_value($security),
                 '/report/security/index.php',
                 $security->error > 0 ? 'error' : ($security->warning > 0 ? 'warning' : 'ok')
             ),
@@ -217,45 +213,110 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
                 get_string('signal_cron', 'local_admindashboard'),
                 $this->format_cron_value($cron),
                 '/admin/tool/task/scheduledtasks.php',
-                $this->cron_severity($cron)
+                $this->cron_severity($cron),
+                $cron->lastrunat > 0 ? userdate($cron->lastrunat) : ''
             ),
         ];
     }
 
     /**
      * Builds one health signal tile, mapping its 'ok'/'warning'/'error'
-     * severity onto a bootstrap contextual colour class.
+     * severity onto the badge markup core itself uses for check statuses
+     * (see \core\check\result and its lib/templates/check/result/*.mustache
+     * partials: <span class="badge bg-{colour} {textclass}">{label}</span>,
+     * no icon).
+     *
+     * The icon added on top (for colour-blind accessibility) deliberately
+     * does NOT go through $OUTPUT->pix_icon()'s semantic identifiers (e.g.
+     * 'i/valid', 'i/warning'). Checked core's own icon map
+     * (\core\output\icon_system_fontawesome::get_core_icon_map()): those
+     * identifiers bake in a fixed colour class ('i/valid' => 'fa-check
+     * text-success', 'i/warning' => 'fa-triangle-exclamation text-warning').
+     * That's fine for an icon standing alone on a neutral background, but
+     * inside our own bg-success/bg-warning badge it means e.g. a
+     * text-success (green) icon on a bg-success (green) badge - nearly
+     * invisible, which is exactly the colour-blind-unfriendly outcome this
+     * icon was added to avoid. Using the bare FontAwesome glyph class
+     * without a colour class lets the icon inherit the badge's own
+     * text-white/text-dark colour instead, matching the label text next to
+     * it. The glyph names themselves (fa-check, fa-triangle-exclamation)
+     * are still the same ones core uses, just without the clashing colour.
      *
      * @param string $label
      * @param int|string $value
      * @param string $path site-relative path for the tile's click-through
      * @param string $severity 'ok', 'warning', or 'error'
-     * @return \stdClass label, value, url, severityclass
+     * @param string $valuetitle optional title/tooltip attribute for the value
+     * @return \stdClass label, value, valuetitle, url, severitybgclass,
+     *         severitytextclass, severityiconclass, severitylabel
      */
-    private function make_signal_tile(string $label, $value, string $path, string $severity): \stdClass {
-        $severityclasses = [
-            'ok' => 'success',
-            'warning' => 'warning',
-            'error' => 'danger',
+    private function make_signal_tile(
+        string $label,
+        $value,
+        string $path,
+        string $severity,
+        string $valuetitle = ''
+    ): \stdClass {
+        // Colour + text-contrast pairing matches core\check\result's own bg-success/text-white,
+        // bg-warning/text-dark, bg-danger/text-white convention; icon glyph names match core's
+        // i/valid and i/warning mapping, minus their colour classes (see docblock above).
+        $severitymap = [
+            'ok' => ['bgclass' => 'success', 'textclass' => 'text-white', 'icon' => 'fa-check', 'labelkey' => 'ok'],
+            'warning' => ['bgclass' => 'warning', 'textclass' => 'text-dark', 'icon' => 'fa-triangle-exclamation', 'labelkey' => 'warning'],
+            'error' => ['bgclass' => 'danger', 'textclass' => 'text-white', 'icon' => 'fa-triangle-exclamation', 'labelkey' => 'error'],
         ];
+        $map = $severitymap[$severity] ?? $severitymap['error'];
 
         return (object) [
             'label' => $label,
             'value' => $value,
+            'valuetitle' => $valuetitle,
             'url' => (new \core\url($path))->out(false),
-            'severityclass' => $severityclasses[$severity] ?? 'secondary',
+            'severitybgclass' => $map['bgclass'],
+            'severitytextclass' => $map['textclass'],
+            'severityiconclass' => $map['icon'],
+            'severitylabel' => get_string($map['labelkey'], 'core'),
         ];
     }
 
     /**
+     * Formats the security overview health signal's display value as a
+     * single compact line, e.g. "15 OK · 4 Warnungen" - error is only
+     * shown when non-zero (0 errors is the expected, unremarkable case);
+     * ok and warning are always shown since either could legitimately be 0.
+     *
+     * @param \stdClass $security as returned by
+     *        health_signals::security_overview_summary()
+     * @return string
+     */
+    private function format_security_value(\stdClass $security): string {
+        $parts = [
+            get_string('signal_security_ok', 'local_admindashboard', $security->ok),
+            get_string('signal_security_warning', 'local_admindashboard', $security->warning),
+        ];
+        if ($security->error > 0) {
+            $parts[] = get_string('signal_security_error', 'local_admindashboard', $security->error);
+        }
+
+        return implode(' · ', $parts);
+    }
+
+    /**
      * Formats the cron health signal's display value.
+     *
+     * The "last run" part uses the same format_time(time() - $timestamp)
+     * idiom core itself uses for relative timestamps (see
+     * admin/classes/reportbuilder/local/systemreports/users.php's lastaccess
+     * column), e.g. "2 hours 15 mins", rather than a full date/time - the
+     * full timestamp is still available via the tile's title attribute
+     * (see export_health_signals()).
      *
      * @param \stdClass $cron as returned by health_signals::cron_status()
      * @return string
      */
     private function format_cron_value(\stdClass $cron): string {
         $lastrun = $cron->lastrunat > 0
-            ? get_string('signal_cron_lastrun', 'local_admindashboard', userdate($cron->lastrunat))
+            ? get_string('signal_cron_lastrun', 'local_admindashboard', format_time(time() - $cron->lastrunat))
             : get_string('signal_cron_neverrun', 'local_admindashboard');
 
         return $lastrun . ' ' . get_string('signal_cron_failedtasks', 'local_admindashboard', $cron->failedtasks24h);

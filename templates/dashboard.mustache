@@ -42,7 +42,16 @@
         "noschoolsconfigured": false,
         "settingsurl": "http://example.com/admin/settings.php?section=local_admindashboard_settings",
         "healthsignals": [
-            {"label": "Duplicate emails", "value": 0, "url": "http://example.com/x.php", "severityclass": "success"}
+            {
+                "label": "Duplicate emails",
+                "value": 0,
+                "valuetitle": "",
+                "url": "http://example.com/x.php",
+                "severitybgclass": "success",
+                "severitytextclass": "text-white",
+                "severityiconclass": "fa-check",
+                "severitylabel": "OK"
+            }
         ],
         "navgroups": [
             {"title": "User management", "items": [{"label": "Upload users", "url": "http://example.com/y.php"}]}
@@ -51,7 +60,7 @@
 }}
 <div class="local-admindashboard">
 
-    <form method="get" action="{{dashboardurl}}" class="form-inline mb-4">
+    <form method="get" action="{{dashboardurl}}" class="d-flex flex-wrap align-items-center mb-4">
         <label for="local-admindashboard-timerangedays" class="me-2">
             {{#str}} timerange_label, local_admindashboard {{/str}}
         </label>
@@ -106,14 +115,22 @@
     {{/schools}}
 
     <h3>{{#str}} section_healthsignals, local_admindashboard {{/str}}</h3>
-    <div class="row mb-4">
+    <div class="row mb-4 align-items-stretch">
         {{#healthsignals}}
-        <div class="col-sm-3">
+        <div class="col-sm-3 mb-2">
             <a href="{{url}}" class="text-decoration-none">
-                <div class="card text-center mb-2 border-{{severityclass}}">
-                    <div class="card-body">
-                        <div class="h4 mb-0">{{value}}</div>
-                        <div class="text-muted">{{label}}</div>
+                <div class="card text-center h-100">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="h4 mb-0" title="{{valuetitle}}">{{value}}</div>
+                            <div class="text-muted">{{label}}</div>
+                        </div>
+                        <div>
+                            <span class="badge bg-{{severitybgclass}} {{severitytextclass}} mt-2 d-inline-flex align-items-center justify-content-center gap-1">
+                                <i class="icon fa {{severityiconclass}} fa-fw" aria-hidden="true"></i>
+                                {{severitylabel}}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </a>
