@@ -60,7 +60,7 @@ final class user_metrics_test extends \advanced_testcase {
 
         $after = user_metrics::get_metrics(90);
 
-        // +2 plain users, +1 suspended user; deleted and remote-host accounts are excluded.
+        // Two plain users plus one suspended user; deleted and remote-host accounts are excluded.
         $this->assertSame($before->totalusers + 3, $after->totalusers);
     }
 

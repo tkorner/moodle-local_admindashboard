@@ -41,6 +41,9 @@
 
 namespace local_admindashboard\metrics;
 
+/**
+ * Global user metrics: total, recently active, and new-in-period accounts.
+ */
 class user_metrics {
     /**
      * Computes the three global user metrics from SPEC section 3.
