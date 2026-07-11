@@ -42,5 +42,64 @@ if ($hassiteconfig) {
         'local_admindashboard_settings',
         get_string('pluginname', 'local_admindashboard')
     );
+
+    // Building the school choice list and the one-sided-match warning both need a live
+    // idnumber match, so only do it when the full settings page is actually rendered
+    // (not on every admin tree build, e.g. for navigation or search).
+    if ($ADMIN->fulltree) {
+        $settings->add(new admin_setting_configselect(
+            'local_admindashboard/timerangedays',
+            get_string('timerangedays', 'local_admindashboard'),
+            get_string('timerangedays_desc', 'local_admindashboard'),
+            180,
+            [
+                30 => get_string('numdays', 'core', 30),
+                90 => get_string('numdays', 'core', 90),
+                180 => get_string('numdays', 'core', 180),
+                360 => get_string('numdays', 'core', 360),
+            ]
+        ));
+
+        $matches = \local_admindashboard\school_matcher::get_matches();
+
+        $schoolchoices = [];
+        foreach ($matches->matched as $idnumber => $school) {
+            $schoolchoices[$idnumber] = get_string('activeschools_option', 'local_admindashboard', (object) [
+                'idnumber' => $idnumber,
+                'cohortname' => $school->cohortname,
+                'categoryname' => $school->categoryname,
+            ]);
+        }
+
+        $settings->add(new admin_setting_configmultiselect(
+            'local_admindashboard/activeschools',
+            get_string('activeschools', 'local_admindashboard'),
+            get_string('activeschools_desc', 'local_admindashboard'),
+            [],
+            $schoolchoices
+        ));
+
+        $onesided = [];
+        foreach ($matches->cohortonly as $idnumber => $school) {
+            $onesided[] = get_string('onesided_cohortonly', 'local_admindashboard', s($idnumber));
+        }
+        foreach ($matches->categoryonly as $idnumber => $school) {
+            $onesided[] = get_string('onesided_categoryonly', 'local_admindashboard', s($idnumber));
+        }
+
+        if (empty($onesided)) {
+            $warningtext = get_string('onesided_none', 'local_admindashboard');
+        } else {
+            $warningtext = get_string('onesided_intro', 'local_admindashboard')
+                . \core\output\html_writer::alist($onesided);
+        }
+
+        $settings->add(new admin_setting_description(
+            'local_admindashboard/onesidedwarning',
+            get_string('onesidedwarning', 'local_admindashboard'),
+            $warningtext
+        ));
+    }
+
     $ADMIN->add('localplugins', $settings);
 }

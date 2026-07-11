@@ -24,5 +24,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['activeschools'] = 'Active school codes';
+$string['activeschools_desc'] = 'Only fully matched codes (cohort and top-level category share the same idnumber) can be selected here. They are shown on the dashboard.';
+$string['activeschools_option'] = '{$a->idnumber} ({$a->cohortname} / {$a->categoryname})';
 $string['admindashboard:view'] = 'View the admin dashboard';
+$string['onesided_categoryonly'] = '{$a}: a top-level category exists, but no matching cohort';
+$string['onesided_cohortonly'] = '{$a}: a cohort exists, but no matching top-level category';
+$string['onesided_intro'] = 'These codes are only maintained on one side (cohort or category), not both, and cannot be selected as an active school:';
+$string['onesided_none'] = 'All cohorts and top-level categories with an idnumber are fully matched - nothing to report here.';
+$string['onesidedwarning'] = 'One-sided matches';
 $string['pluginname'] = 'Admin Dashboard';
+$string['timerangedays'] = 'Time range for "new in period" counts';
+$string['timerangedays_desc'] = 'Used by the dashboard to determine which users, cohort members, and courses count as "new". Can be temporarily overridden on the dashboard page itself without changing this default.';
