@@ -75,7 +75,7 @@ class health_signals {
         $result->details = [];
 
         if (!empty($duplicategroups)) {
-            [$emailsql, $emailparams] = $DB->get_in_or_equal(array_keys($duplicategroups));
+            [$emailsql, $emailparams] = $DB->get_in_or_equal(array_keys($duplicategroups), SQL_PARAMS_NAMED, 'email');
             $sql = "SELECT id, email, firstname, lastname
                       FROM {user}
                      WHERE deleted = 0
