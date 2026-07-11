@@ -54,6 +54,22 @@ Folgende Dinge dürfen nicht aus Trainingsdaten/Vermutung implementiert werden, 
 
 ---
 
+## Testing-Strategie
+
+Kein lokales GUI, PHPUnit lokal nicht installierbar. Deshalb zwei Ebenen:
+
+1. **CLI-Smoke-Skripte** (`cli/verify_*.php`) – sofortiges Feedback während der Session, direkt gegen die echten Daten der laufenden Docker-Instanz, ohne Testframework:
+   ```bash
+   docker exec -it claude-moodle-1 php /var/www/html/local/admindashboard/cli/verify_school_matcher.php
+   ```
+   Kein Ersatz für echte Tests, nur Sichtprüfung während der Entwicklung.
+
+2. **GitHub Actions mit `moodlehq/moodle-plugin-ci`** – führt bei jedem Push/PR die eigentliche Absicherung durch: PHPUnit, Behat, phpcs (moodle-Ruleset), phplint, mustache-Lint etc. PHPUnit-Testdateien werden trotzdem geschrieben (siehe Prompt-Dokument Schritt 1/3/4) – sie laufen nur nicht lokal, sondern über CI. Ergebnis im GitHub-Actions-Tab prüfen, nicht lokal erwarten.
+
+**Fortschritt:** Schritt 0 (Grundgerüst) und Schritt 1 (`school_matcher`) sind bereits umgesetzt. CI-Pipeline (Schritt 0b) wird nachträglich ergänzt.
+
+---
+
 ## Coding-Standards
 
 - Moodle Coding Guidelines / Moodle Coding Style (phpcs mit moodle-Ruleset, falls lokal verfügbar)

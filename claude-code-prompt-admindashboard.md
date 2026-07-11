@@ -4,9 +4,17 @@ Diese Datei enthält die Schritt-für-Schritt-Sequenz für die Implementierung, 
 
 Vor Schritt 1: `SPEC-admindashboard.md` in dasselbe Verzeichnis wie `CLAUDE.md` legen, damit Claude Code beides als Kontext hat. Ein `CLAUDE.md` für dieses Projekt sollte enthalten: Zielumgebung (Moodle 5.2.x in Docker, `/var/www/html/public/local/`), Coding-Standard (core-contribution-taugliche Qualität, Moodle Coding Style), und den Hinweis, dass dies ein Reporting-/Navigations-Plugin ohne eigenes DB-Schema ist.
 
+**Testing-Hinweis (Stand: kein GUI-Zugriff, PHPUnit lokal nicht installierbar):** Statt lokaler PHPUnit-Ausführung werden zwei Ebenen genutzt:
+1. **CLI-Smoke-Skripte** unter `cli/verify_*.php` für sofortiges Feedback während der Session (`docker exec -it claude-moodle-1 php /var/www/html/local/admindashboard/cli/verify_*.php`)
+2. **GitHub Actions mit `moodlehq/moodle-plugin-ci`** für die echte PHPUnit-/Behat-/Codechecker-Ausführung bei jedem Push (siehe Schritt 0b)
+
+PHPUnit-Testdateien werden trotzdem geschrieben (laufen nur nicht lokal, sondern über CI) – nicht weglassen.
+
+**Fortschritt:** Schritt 0 und Schritt 1 sind bereits umgesetzt (Grundgerüst + `school_matcher`). Weiter ab Schritt 0b.
+
 ---
 
-## Schritt 0 – Plugin-Grundgerüst
+## Schritt 0 – Plugin-Grundgerüst ✅ erledigt
 
 ```
 Erstelle das Grundgerüst für ein neues Moodle-Plugin vom Typ "local", Komponente
@@ -32,7 +40,7 @@ Committe noch nichts, ich möchte das Ergebnis erst reviewen.
 
 ---
 
-## Schritt 1 – Kürzel-Erkennung (Kohorte ↔ Kategorie Matching)
+## Schritt 1 – Kürzel-Erkennung (Kohorte ↔ Kategorie Matching) ✅ erledigt
 
 ```
 Implementiere die Klasse classes/school_matcher.php (Namespace local_admindashboard).
@@ -54,6 +62,34 @@ Bedingungen), keine rohen mysqli-Aufrufe. Schreibe dazu einen PHPUnit-Test
 (get_data_generator()->create_cohort(), create_category()) mindestens folgende Fälle
 abdeckt: vollständiges Paar, Kohorte ohne Kategorie, Kategorie ohne Kohorte,
 Kürzel mit leerer idnumber wird ignoriert.
+```
+
+---
+
+## Schritt 0b – CI-Pipeline einrichten (nachträglich, jetzt nachholen)
+
+```
+Richte eine GitHub-Actions-Pipeline für dieses Plugin ein, basierend auf
+moodlehq/moodle-plugin-ci.
+
+Erstelle .github/workflows/ci.yml nach dem Standard-Template von
+moodle-plugin-ci (siehe https://github.com/moodlehq/moodle-plugin-ci für die
+aktuelle empfohlene Workflow-Vorlage). Berücksichtige dabei:
+- Matrix mindestens für die PHP-Version und Moodle-Version, die zur Zielumgebung
+  passen (Moodle 5.2.x-Linie; passende PHP-Version dazu recherchieren, nicht raten)
+- MariaDB als DB-Service (passend zur Zielumgebung, nicht Postgres annehmen)
+- Standard-Schritte: phplint, phpcpd, phpcs (moodle-Ruleset), phpdoc, validate,
+  savepoints, mustache-Lint, grunt, phpunit, behat
+- Workflow soll bei jedem Push und bei Pull Requests laufen
+
+Erstelle zusätzlich ein kurzes cli/verify_school_matcher.php als Sofort-Check
+(kein Testframework, reines Ausführungsskript mit CLI_SCRIPT-Konstante und
+Ausgabe via print_r), das ich lokal per
+`docker exec -it claude-moodle-1 php ...` laufen lassen kann, ohne auf den
+CI-Lauf warten zu müssen. Dieses Skript testet school_matcher::get_matched()
+gegen die tatsächlichen Daten der laufenden Instanz (kein Testdaten-Generator,
+sondern echte Kohorten/Kategorien) – rein zur Sichtprüfung, kein Ersatz für den
+PHPUnit-Test aus Schritt 1.
 ```
 
 ---
@@ -92,7 +128,9 @@ berechnet und als einfaches Datenobjekt/Array zurückgibt:
   (Zeitraum aus dem Setting local_admindashboard/timerangedays)
 
 Schreibe effiziente SQL-Queries (COUNT-Abfragen, keine vollständigen Recordsets laden).
-Ergänze einen PHPUnit-Test mit Testdaten für alle drei Werte.
+Ergänze einen PHPUnit-Test mit Testdaten für alle drei Werte (läuft über CI, siehe
+Schritt 0b). Ergänze zusätzlich cli/verify_user_metrics.php für die Sofortprüfung
+gegen die echten Daten der laufenden Instanz.
 ```
 
 ---
@@ -113,7 +151,9 @@ Wichtig: Bestätige in einem Kommentar im Code die Annahme "Kurszahl inkl. Subka
 explizit, damit das bei Bedarf leicht revidierbar ist.
 
 Ergänze PHPUnit-Tests mit einer Kategorie, die mindestens eine Subkategorie mit Kursen
-enthält, um das Path-Matching zu verifizieren.
+enthält, um das Path-Matching zu verifizieren (läuft über CI, siehe Schritt 0b).
+Ergänze zusätzlich cli/verify_school_metrics.php für die Sofortprüfung gegen ein
+tatsächliches Schul-Kürzel der laufenden Instanz.
 ```
 
 ---
