@@ -82,11 +82,19 @@ Kein lokales GUI, PHPUnit lokal nicht installierbar. Deshalb zwei Ebenen:
 
 ## Bekannte offene Annahmen (aus SPEC Abschnitt 8)
 
-1. Kurszahl pro Schule inkl. Subkategorien – Annahme "ja", im Code explizit kommentiert, revidierbar
-2. Security-Overview-Aggregation – API noch zu identifizieren
-3. Scheduled-Tasks-URL – noch zu verifizieren
-4. Boost-Union-Settings-URL – noch zu verifizieren
-5. "Nutzer gesamt" (user_metrics) – Annahme "suspendierte Konten zählen mit", nur `deleted`/Gast/MNet-Fremdkonten sind ausgeschlossen; im Docblock von `classes/metrics/user_metrics.php` begründet, revidierbar
+**Erledigt, nicht mehr offen** (ursprünglich hier als offen gelistet, inzwischen gegen echten Code verifiziert – siehe Schritt 5/7 im Prompt-Dokument):
+- Security-Overview-Aggregation → `\core\check\manager::get_checks('security')`, dieselbe API die `report_security/index.php` selbst nutzt (Docblock in `classes/metrics/health_signals.php`)
+- Scheduled-Tasks-URL → `/admin/tool/task/scheduledtasks.php`, live durchgeklickt
+- Boost-Union-Settings-URL → `/theme/boost_union/settings_overview.php` (nicht die naive `/admin/settings.php?section=...`-URL, die Core selbst dorthin weiterleitet), live durchgeklickt
+
+**Weiterhin offen / bewusste Annahme – bitte vor Produktivbetrieb gegenlesen:**
+
+1. Kurszahl pro Schule inkl. Subkategorien – Annahme "ja", im Docblock von `classes/metrics/school_metrics.php` begründet, revidierbar
+2. "Nutzer gesamt" (user_metrics) – Annahme "suspendierte Konten zählen mit", nur `deleted`/Gast/MNet-Fremdkonten sind ausgeschlossen; im Docblock von `classes/metrics/user_metrics.php` begründet, revidierbar
+3. Cron-Status-Ampel (Health-Signal-Kachel) – eigene Schwellwert-Heuristik (`failedtasks24h > 0` → error, überfällig um mehr als `$CFG->expectedcronfrequency` → warning), **keine** Wiederverwendung von `\tool_task\check\cronrunning`s eigenem Urteil (das bleibt einen Klick entfernt über die Kachel erreichbar); im Docblock von `classes/output/dashboard_page.php::cron_severity()` begründet
+4. "Kohorten verwalten / hochladen" (SPEC Abschnitt 5, Nutzerverwaltung) als EIN Bullet-Point interpretiert → zwei separate Navigations-Links (`cohort/index.php` und `cohort/upload.php`), da beide gleichwertig generisch nutzbar sind
+5. "Kurs-Backup/-Restore" (SPEC Abschnitt 5, Kursverwaltung) als EIN Bullet-Point interpretiert → nur EIN Navigations-Link (`backup/restorefile.php` mit System-Context, dasselbe Muster wie `admin/settings/courses.php`), da "Backup" allein nicht kursübergreifend sinnvoll ist (Backup ist immer pro Kurs, Restore kann generisch am System-Context starten)
+6. Security-Overview-Ampel (3 Stufen ok/warning/error) – eigene Zuordnung der 7 Core-Stati (`\core\check\result::OK/INFO/NA` → ok, `WARNING/UNKNOWN` → warning, `ERROR/CRITICAL` → error), da Core selbst keine 3-Stufen-Gruppierung kennt; im Docblock von `classes/metrics/health_signals.php::bucket_for_status()` begründet
 
 Diese Liste bei Bedarf ergänzen, wenn im Verlauf der Implementierung neue offene Punkte auftauchen – nicht stillschweigend Annahmen treffen und weitermachen.
 
