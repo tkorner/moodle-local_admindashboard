@@ -104,7 +104,6 @@ final class health_signals_test extends \advanced_testcase {
      * @return void
      */
     public function test_cron_status_reads_lastcronstart_and_recent_failures(): void {
-        global $DB;
         $this->resetAfterTest(true);
 
         $lastcron = time() - (2 * MINSECS);

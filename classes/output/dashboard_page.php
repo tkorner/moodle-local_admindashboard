@@ -42,6 +42,8 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
     private $timerangedays;
 
     /**
+     * Constructor.
+     *
      * @param int $timerangedays effective time range for this page view
      *        (the configured default, or a temporary GET override)
      */
