@@ -59,14 +59,15 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      */
     public function export_for_template(\core\output\renderer_base $output): array {
         return [
+            'introtext' => get_string('dashboardintro', 'local_admindashboard'),
             'timerangedays' => $this->timerangedays,
             'timerangeoptions' => $this->export_timerange_options(),
             'dashboardurl' => (new \core\url('/local/admindashboard/index.php'))->out(false),
-            'usermetrics' => $this->export_user_metrics(),
-            'schools' => $this->export_schools(),
+            'usermetrics' => $this->export_user_metrics($output),
+            'schools' => $this->export_schools($output),
             'noschoolsconfigured' => empty($this->get_active_matched_schools()),
             'settingsurl' => (new \core\url('/admin/settings.php', ['section' => 'local_admindashboard_settings']))->out(false),
-            'healthsignals' => $this->export_health_signals(),
+            'healthsignals' => $this->export_health_signals($output),
             'navgroups' => $this->export_nav_groups(),
         ];
     }
@@ -91,15 +92,28 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
     /**
      * Exports the global user metrics tile row.
      *
-     * @return array of stdClass: label, value
+     * @param \core\output\renderer_base $output
+     * @return array of stdClass: label, value, helpicon
      */
-    private function export_user_metrics(): array {
+    private function export_user_metrics(\core\output\renderer_base $output): array {
         $metrics = user_metrics::get_metrics($this->timerangedays);
 
         return [
-            (object) ['label' => get_string('tile_totalusers', 'local_admindashboard'), 'value' => $metrics->totalusers],
-            (object) ['label' => get_string('tile_activeusers', 'local_admindashboard'), 'value' => $metrics->activeusers],
-            (object) ['label' => get_string('tile_newusers', 'local_admindashboard'), 'value' => $metrics->newusers],
+            (object) [
+                'label' => get_string('tile_totalusers', 'local_admindashboard'),
+                'value' => $metrics->totalusers,
+                'helpicon' => '',
+            ],
+            (object) [
+                'label' => get_string('tile_activeusers', 'local_admindashboard'),
+                'value' => $metrics->activeusers,
+                'helpicon' => $output->help_icon('activeusers', 'local_admindashboard'),
+            ],
+            (object) [
+                'label' => get_string('tile_newusers', 'local_admindashboard'),
+                'value' => $metrics->newusers,
+                'helpicon' => $output->help_icon('newinperiod', 'local_admindashboard'),
+            ],
         ];
     }
 
@@ -135,10 +149,11 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
     /**
      * Builds the per-school tile groups.
      *
+     * @param \core\output\renderer_base $output
      * @return array of stdClass: idnumber, name, tiles (array of
-     *         stdClass: label, value), coursemanagementurl
+     *         stdClass: label, value, helpicon), coursemanagementurl
      */
-    private function export_schools(): array {
+    private function export_schools(\core\output\renderer_base $output): array {
         $schools = [];
 
         foreach ($this->get_active_matched_schools() as $school) {
@@ -151,22 +166,27 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
                     (object) [
                         'label' => get_string('schooltile_membercount', 'local_admindashboard'),
                         'value' => $metrics->membercount,
+                        'helpicon' => '',
                     ],
                     (object) [
                         'label' => get_string('schooltile_newmembers', 'local_admindashboard'),
                         'value' => $metrics->newmembers,
+                        'helpicon' => $output->help_icon('newinperiod', 'local_admindashboard'),
                     ],
                     (object) [
                         'label' => get_string('schooltile_activemembers', 'local_admindashboard'),
                         'value' => $metrics->activemembers,
+                        'helpicon' => $output->help_icon('activeusers', 'local_admindashboard'),
                     ],
                     (object) [
                         'label' => get_string('schooltile_coursecount', 'local_admindashboard'),
                         'value' => $metrics->coursecount,
+                        'helpicon' => '',
                     ],
                     (object) [
                         'label' => get_string('schooltile_newcourses', 'local_admindashboard'),
                         'value' => $metrics->newcourses,
+                        'helpicon' => $output->help_icon('newinperiod', 'local_admindashboard'),
                     ],
                 ],
                 'coursemanagementurl' => (new \core\url(
@@ -182,9 +202,10 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
     /**
      * Builds the four health signal tiles.
      *
+     * @param \core\output\renderer_base $output
      * @return array of stdClass, see make_signal_tile()
      */
-    private function export_health_signals(): array {
+    private function export_health_signals(\core\output\renderer_base $output): array {
         $duplicates = health_signals::duplicate_emails();
         $noenddate = health_signals::courses_without_enddate();
         $security = health_signals::security_overview_summary();
@@ -207,14 +228,17 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
                 get_string('signal_security', 'local_admindashboard'),
                 $this->format_security_value($security),
                 '/report/security/index.php',
-                $security->error > 0 ? 'error' : ($security->warning > 0 ? 'warning' : 'ok')
+                $security->error > 0 ? 'error' : ($security->warning > 0 ? 'warning' : 'ok'),
+                '',
+                $output->help_icon('signal_security', 'local_admindashboard')
             ),
             $this->make_signal_tile(
                 get_string('signal_cron', 'local_admindashboard'),
                 $this->format_cron_value($cron),
                 '/admin/tool/task/scheduledtasks.php',
                 $this->cron_severity($cron),
-                $cron->lastrunat > 0 ? userdate($cron->lastrunat) : ''
+                $cron->lastrunat > 0 ? userdate($cron->lastrunat) : '',
+                $output->help_icon('signal_cron', 'local_admindashboard')
             ),
         ];
     }
@@ -247,15 +271,19 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      * @param string $path site-relative path for the tile's click-through
      * @param string $severity 'ok', 'warning', or 'error'
      * @param string $valuetitle optional title/tooltip attribute for the value
-     * @return \stdClass label, value, valuetitle, url, severitybgclass,
-     *         severitytextclass, severityiconclass, severitylabel
+     * @param string $helpicon optional pre-rendered help icon HTML (see
+     *        $OUTPUT->help_icon())
+     * @return \stdClass label, value, valuetitle, helpicon, url,
+     *         severitybgclass, severitytextclass, severityiconclass,
+     *         severitylabel
      */
     private function make_signal_tile(
         string $label,
         $value,
         string $path,
         string $severity,
-        string $valuetitle = ''
+        string $valuetitle = '',
+        string $helpicon = ''
     ): \stdClass {
         // Colour + text-contrast pairing matches core\check\result's own bg-success/text-white,
         // bg-warning/text-dark, bg-danger/text-white convention; icon glyph names match core's
@@ -279,6 +307,7 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
             'label' => $label,
             'value' => $value,
             'valuetitle' => $valuetitle,
+            'helpicon' => $helpicon,
             'url' => (new \core\url($path))->out(false),
             'severitybgclass' => $map['bgclass'],
             'severitytextclass' => $map['textclass'],

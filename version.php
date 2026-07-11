@@ -27,5 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'local_admindashboard';
 $plugin->version   = 2026071001;   // YYYYMMDDXX.
 $plugin->requires  = 2025100600;   // Moodle 5.1.0 branching version (MOODLE_501_STABLE) - supports 5.1 and 5.2.
-$plugin->maturity  = MATURITY_STABLE;
+$plugin->maturity  = MATURITY_RC;
 $plugin->release   = '1.0.0';
