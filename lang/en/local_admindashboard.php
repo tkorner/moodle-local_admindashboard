@@ -28,6 +28,16 @@ $string['activeschools'] = 'Active school codes';
 $string['activeschools_desc'] = 'Only fully matched codes (cohort and top-level category share the same idnumber) can be selected here. They are shown on the dashboard.';
 $string['activeschools_option'] = '{$a->idnumber} ({$a->cohortname} / {$a->categoryname})';
 $string['admindashboard:view'] = 'View the admin dashboard';
+$string['backtodashboard'] = 'Back to dashboard';
+$string['courseswithoutenddate'] = 'Courses without an end date';
+$string['courseswithoutenddate_none'] = 'No courses without an end date - nothing to report here.';
+$string['duplicateemails'] = 'Duplicate email addresses';
+$string['duplicateemails_none'] = 'No duplicate email addresses found - nothing to report here.';
+$string['mergeusershint'] = 'This list is a starting point for identifying accounts to merge. The '
+    . '"Merge user accounts" admin tool (tool_mergeusers) is not installed on this instance, so no direct '
+    . 'link is shown here - install it to actually merge two accounts.';
+$string['mergeusershint_link'] = 'This list is a starting point for identifying accounts to merge. Use {$a} to actually merge two accounts.';
+$string['mergeuserslinktext'] = 'Merge user accounts';
 $string['onesided_categoryonly'] = '{$a}: a top-level category exists, but no matching cohort';
 $string['onesided_cohortonly'] = '{$a}: a cohort exists, but no matching top-level category';
 $string['onesided_intro'] = 'These codes are only maintained on one side (cohort or category), not both, and cannot be selected as an active school:';

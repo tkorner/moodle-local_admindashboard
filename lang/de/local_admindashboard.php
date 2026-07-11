@@ -28,6 +28,16 @@ $string['activeschools'] = 'Aktive Schul-Kürzel';
 $string['activeschools_desc'] = 'Nur vollständig gepaarte Kürzel (Kohorte und Top-Level-Kategorie mit identischer idnumber) stehen hier zur Auswahl. Sie werden auf dem Dashboard angezeigt.';
 $string['activeschools_option'] = '{$a->idnumber} ({$a->cohortname} / {$a->categoryname})';
 $string['admindashboard:view'] = 'Admin-Dashboard ansehen';
+$string['backtodashboard'] = 'Zurück zum Dashboard';
+$string['courseswithoutenddate'] = 'Kurse ohne Enddatum';
+$string['courseswithoutenddate_none'] = 'Keine Kurse ohne Enddatum gefunden - hier gibt es nichts zu melden.';
+$string['duplicateemails'] = 'Doppelte E-Mail-Adressen';
+$string['duplicateemails_none'] = 'Keine doppelten E-Mail-Adressen gefunden - hier gibt es nichts zu melden.';
+$string['mergeusershint'] = 'Diese Liste ist ein Ausgangspunkt, um zusammenzuführende Konten zu identifizieren. '
+    . 'Das Admin-Tool "Merge user accounts" (tool_mergeusers) ist auf dieser Instanz nicht installiert, daher '
+    . 'wird hier kein direkter Link angezeigt - installiere es, um Konten tatsächlich zusammenzuführen.';
+$string['mergeusershint_link'] = 'Diese Liste ist ein Ausgangspunkt, um zusammenzuführende Konten zu identifizieren. Nutze {$a} für die eigentliche Zusammenführung.';
+$string['mergeuserslinktext'] = 'Merge user accounts';
 $string['onesided_categoryonly'] = '{$a}: Top-Level-Kategorie vorhanden, aber keine passende Kohorte';
 $string['onesided_cohortonly'] = '{$a}: Kohorte vorhanden, aber keine passende Top-Level-Kategorie';
 $string['onesided_intro'] = 'Diese Kürzel sind nur einseitig gepflegt (Kohorte oder Kategorie, nicht beides) und können nicht als aktive Schule ausgewählt werden:';
