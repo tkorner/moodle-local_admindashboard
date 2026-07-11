@@ -86,6 +86,7 @@ Kein lokales GUI, PHPUnit lokal nicht installierbar. Deshalb zwei Ebenen:
 2. Security-Overview-Aggregation – API noch zu identifizieren
 3. Scheduled-Tasks-URL – noch zu verifizieren
 4. Boost-Union-Settings-URL – noch zu verifizieren
+5. "Nutzer gesamt" (user_metrics) – Annahme "suspendierte Konten zählen mit", nur `deleted`/Gast/MNet-Fremdkonten sind ausgeschlossen; im Docblock von `classes/metrics/user_metrics.php` begründet, revidierbar
 
 Diese Liste bei Bedarf ergänzen, wenn im Verlauf der Implementierung neue offene Punkte auftauchen – nicht stillschweigend Annahmen treffen und weitermachen.
 
