@@ -28,7 +28,6 @@ namespace local_admindashboard;
  * Class school_matcher_test
  */
 final class school_matcher_test extends \advanced_testcase {
-
     /**
      * A cohort and a top-level category sharing the same idnumber are a
      * "matched" pair, and neither shows up in the one-sided lists.

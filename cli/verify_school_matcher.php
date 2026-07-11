@@ -36,13 +36,16 @@ use local_admindashboard\school_matcher;
 $result = school_matcher::get_matches();
 
 echo '== matched (idnumber => cohortid/categoryid) ==' . PHP_EOL;
-print_r($result->matched);
+var_export($result->matched);
+echo PHP_EOL;
 
 echo '== cohortonly (cohort without a matching top-level category) ==' . PHP_EOL;
-print_r($result->cohortonly);
+var_export($result->cohortonly);
+echo PHP_EOL;
 
 echo '== categoryonly (top-level category without a matching cohort) ==' . PHP_EOL;
-print_r($result->categoryonly);
+var_export($result->categoryonly);
+echo PHP_EOL;
 
 printf(
     'Summary: %d matched, %d cohort-only, %d category-only.' . PHP_EOL,

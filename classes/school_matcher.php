@@ -29,7 +29,6 @@ namespace local_admindashboard;
  * share the same idnumber. Matching is by idnumber only, never by name.
  */
 class school_matcher {
-
     /**
      * Matches system-wide cohorts against top-level course categories by idnumber.
      *
