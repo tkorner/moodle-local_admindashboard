@@ -261,9 +261,17 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
         // bg-warning/text-dark, bg-danger/text-white convention; icon glyph names match core's
         // i/valid and i/warning mapping, minus their colour classes (see docblock above).
         $severitymap = [
-            'ok' => ['bgclass' => 'success', 'textclass' => 'text-white', 'icon' => 'fa-check', 'labelkey' => 'ok'],
-            'warning' => ['bgclass' => 'warning', 'textclass' => 'text-dark', 'icon' => 'fa-triangle-exclamation', 'labelkey' => 'warning'],
-            'error' => ['bgclass' => 'danger', 'textclass' => 'text-white', 'icon' => 'fa-triangle-exclamation', 'labelkey' => 'error'],
+            'ok' => [
+                'bgclass' => 'success', 'textclass' => 'text-white', 'icon' => 'fa-check', 'labelkey' => 'ok',
+            ],
+            'warning' => [
+                'bgclass' => 'warning', 'textclass' => 'text-dark', 'icon' => 'fa-triangle-exclamation',
+                'labelkey' => 'warning',
+            ],
+            'error' => [
+                'bgclass' => 'danger', 'textclass' => 'text-white', 'icon' => 'fa-triangle-exclamation',
+                'labelkey' => 'error',
+            ],
         ];
         $map = $severitymap[$severity] ?? $severitymap['error'];
 
