@@ -29,6 +29,28 @@ namespace local_admindashboard\metrics;
  */
 final class user_metrics_test extends \advanced_testcase {
     /**
+     * Purges the MUC cache user_metrics now reads through (see
+     * classes/metrics/user_metrics.php, Schritt 7d) before every test, so no
+     * test can see another test's cached numbers - resetAfterTest() rolls
+     * back the database but does not touch the application cache.
+     *
+     * @return void
+     */
+    protected function setUp(): void {
+        parent::setUp();
+        $this->purge_cache();
+    }
+
+    /**
+     * Purges the same cache definition user_metrics uses.
+     *
+     * @return void
+     */
+    private function purge_cache(): void {
+        \cache::make('local_admindashboard', 'dashboarddata')->purge();
+    }
+
+    /**
      * Baseline counts (admin user only, guest excluded) so assertions work
      * against deltas instead of hardcoding Moodle's fixture internals.
      *
@@ -58,6 +80,7 @@ final class user_metrics_test extends \advanced_testcase {
         $this->getDataGenerator()->create_user(['suspended' => 1]);
         $this->getDataGenerator()->create_user(['mnethostid' => $CFG->mnet_localhost_id + 1]);
 
+        $this->purge_cache();
         $after = user_metrics::get_metrics(90);
 
         // Two plain users plus one suspended user; deleted and remote-host accounts are excluded.
@@ -80,6 +103,7 @@ final class user_metrics_test extends \advanced_testcase {
         $this->getDataGenerator()->create_user(['lastaccess' => time() - (5 * WEEKSECS)]);
         $this->getDataGenerator()->create_user(['lastaccess' => 0]);
 
+        $this->purge_cache();
         $after = user_metrics::get_metrics(90);
 
         $this->assertSame($before->activeusers + 1, $after->activeusers);
@@ -99,6 +123,7 @@ final class user_metrics_test extends \advanced_testcase {
         $this->getDataGenerator()->create_user(['timecreated' => time() - (10 * DAYSECS)]);
         $this->getDataGenerator()->create_user(['timecreated' => time() - (200 * DAYSECS)]);
 
+        $this->purge_cache();
         $after = user_metrics::get_metrics(90);
 
         $this->assertSame($before->newusers + 1, $after->newusers);

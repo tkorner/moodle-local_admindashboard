@@ -29,6 +29,21 @@ namespace local_admindashboard\metrics;
  */
 final class school_metrics_test extends \advanced_testcase {
     /**
+     * Purges the MUC cache school_metrics now reads through (see
+     * classes/metrics/school_metrics.php, Schritt 7d) before every test.
+     * resetAfterTest() rolls back the database, including id sequences, so
+     * two test methods can end up computing school_metrics for the exact
+     * same cohortid/categoryid - without this, the second one would see the
+     * first one's cached result instead of its own fixtures.
+     *
+     * @return void
+     */
+    protected function setUp(): void {
+        parent::setUp();
+        \cache::make('local_admindashboard', 'dashboarddata')->purge();
+    }
+
+    /**
      * membercount includes every member regardless of when they were added;
      * newmembers only counts those added within the configured time range.
      *

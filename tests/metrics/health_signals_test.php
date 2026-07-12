@@ -29,6 +29,22 @@ namespace local_admindashboard\metrics;
  */
 final class health_signals_test extends \advanced_testcase {
     /**
+     * Purges the MUC cache health_signals now reads through (see
+     * classes/metrics/health_signals.php, Schritt 7d) before every test.
+     * These four cache keys are static (not parameterised by anything
+     * test-specific), so without this, a test could see a previous test's
+     * (or a previous real request's) cached result instead of its own
+     * fixtures - resetAfterTest() rolls back the database but not the
+     * application cache.
+     *
+     * @return void
+     */
+    protected function setUp(): void {
+        parent::setUp();
+        \cache::make('local_admindashboard', 'dashboarddata')->purge();
+    }
+
+    /**
      * Two accounts sharing an email are reported; a third, unrelated account
      * and a deleted account that (before deletion) shared one of the emails
      * must not affect the result.
