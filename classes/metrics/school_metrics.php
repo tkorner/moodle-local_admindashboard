@@ -42,15 +42,42 @@ namespace local_admindashboard\metrics;
  */
 class school_metrics {
     /**
-     * Computes the five per-school metrics from SPEC section 3.
+     * Returns the five per-school metrics from SPEC section 3, from cache
+     * where possible (see db/caches.php - 1 day TTL, since these numbers are
+     * deliberately not live).
      *
      * @param int $cohortid the school's cohort id
      * @param int $categoryid the school's top-level category id
      * @param int $timerangedays length of the "new in period" window, in days
      * @return \stdClass with membercount, newmembers, activemembers,
-     *         coursecount, and newcourses
+     *         coursecount, newcourses, and computedat (unix timestamp of
+     *         when this was last computed, not necessarily this request)
      */
     public static function get_metrics(int $cohortid, int $categoryid, int $timerangedays): \stdClass {
+        $cache = \cache::make('local_admindashboard', 'dashboarddata');
+        $cachekey = "schoolmetrics_{$cohortid}_{$categoryid}_{$timerangedays}";
+
+        $cached = $cache->get($cachekey);
+        if ($cached !== false) {
+            return $cached;
+        }
+
+        $result = self::compute_metrics($cohortid, $categoryid, $timerangedays);
+        $result->computedat = time();
+        $cache->set($cachekey, $result);
+        return $result;
+    }
+
+    /**
+     * Computes the five per-school metrics from SPEC section 3.
+     *
+     * @param int $cohortid
+     * @param int $categoryid
+     * @param int $timerangedays
+     * @return \stdClass with membercount, newmembers, activemembers,
+     *         coursecount, and newcourses
+     */
+    private static function compute_metrics(int $cohortid, int $categoryid, int $timerangedays): \stdClass {
         $result = new \stdClass();
         $result->membercount = self::count_members($cohortid);
         $result->newmembers = self::count_new_members($cohortid, $timerangedays);

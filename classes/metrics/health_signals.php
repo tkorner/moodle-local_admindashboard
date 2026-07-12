@@ -53,11 +53,22 @@ class health_signals {
      * not deleted, not guest, not a remote MNet account - see that class's
      * docblock for the rationale.
      *
-     * @return \stdClass with count (number of duplicated email addresses)
-     *         and details (array of stdClass: userid, email, fullname - one
-     *         row per affected user, for the drill-down list)
+     * @return \stdClass with count (number of duplicated email addresses),
+     *         details (array of stdClass: userid, email, fullname - one row
+     *         per affected user, for the drill-down list), and computedat
+     *         (unix timestamp of when this was last computed, not
+     *         necessarily this request - see db/caches.php, 1 day TTL)
      */
     public static function duplicate_emails(): \stdClass {
+        return self::from_cache('duplicateemails', [self::class, 'compute_duplicate_emails']);
+    }
+
+    /**
+     * Computes the duplicate_emails() signal.
+     *
+     * @return \stdClass with count and details
+     */
+    private static function compute_duplicate_emails(): \stdClass {
         global $DB, $CFG;
 
         $sql = "SELECT email, COUNT(*) AS usercount
@@ -110,10 +121,20 @@ class health_signals {
      * not an oversight: the front page is not a "course without an enddate"
      * in any actionable sense for this signal.
      *
-     * @return \stdClass with count and details (array of stdClass: courseid,
-     *         fullname, categoryname)
+     * @return \stdClass with count, details (array of stdClass: courseid,
+     *         fullname, categoryname), and computedat (see db/caches.php,
+     *         1 day TTL)
      */
     public static function courses_without_enddate(): \stdClass {
+        return self::from_cache('courseswithoutenddate', [self::class, 'compute_courses_without_enddate']);
+    }
+
+    /**
+     * Computes the courses_without_enddate() signal.
+     *
+     * @return \stdClass with count and details
+     */
+    private static function compute_courses_without_enddate(): \stdClass {
         global $DB;
 
         $sql = "SELECT c.id, c.fullname, cc.name AS categoryname
@@ -142,9 +163,19 @@ class health_signals {
      * light. Reuses \core\check\manager - the same API report_security's own
      * page uses - rather than re-implementing any of the checks.
      *
-     * @return \stdClass with ok, warning, and error counts
+     * @return \stdClass with ok, warning, error, and computedat (see
+     *         db/caches.php, 1 day TTL)
      */
     public static function security_overview_summary(): \stdClass {
+        return self::from_cache('securityoverview', [self::class, 'compute_security_overview_summary']);
+    }
+
+    /**
+     * Computes the security_overview_summary() signal.
+     *
+     * @return \stdClass with ok, warning, and error counts
+     */
+    private static function compute_security_overview_summary(): \stdClass {
         $result = new \stdClass();
         $result->ok = 0;
         $result->warning = 0;
@@ -188,11 +219,26 @@ class health_signals {
      * Reads the core scheduled-task infrastructure for the last cron run
      * and recent task failures.
      *
+     * Cached the same as the other three signals (1 day TTL, see
+     * db/caches.php) for consistency, even though cron health is arguably
+     * exactly the kind of thing you don't want to look a day stale - the
+     * "Cache now leeren" button on the dashboard (classes/output/
+     * dashboard_page.php) is the escape hatch for that.
+     *
      * @return \stdClass with lastrunat (unix timestamp, 0 if cron has never
-     *         run) and failedtasks24h (count of task_log rows with
-     *         result = 1 in the last 24 hours)
+     *         run), failedtasks24h (count of task_log rows with result = 1
+     *         in the last 24 hours), and computedat
      */
     public static function cron_status(): \stdClass {
+        return self::from_cache('cronstatus', [self::class, 'compute_cron_status']);
+    }
+
+    /**
+     * Computes the cron_status() signal.
+     *
+     * @return \stdClass with lastrunat and failedtasks24h
+     */
+    private static function compute_cron_status(): \stdClass {
         global $DB;
 
         $result = new \stdClass();
@@ -203,6 +249,28 @@ class health_signals {
             ['fail' => 1, 'since' => time() - DAYSECS]
         );
 
+        return $result;
+    }
+
+    /**
+     * Shared cache-or-compute helper for the four signal methods above.
+     *
+     * @param string $cachekey
+     * @param callable $computer takes no arguments, returns a \stdClass
+     * @return \stdClass the cached or freshly computed value, with
+     *         computedat set
+     */
+    private static function from_cache(string $cachekey, callable $computer): \stdClass {
+        $cache = \cache::make('local_admindashboard', 'dashboarddata');
+
+        $cached = $cache->get($cachekey);
+        if ($cached !== false) {
+            return $cached;
+        }
+
+        $result = $computer();
+        $result->computedat = time();
+        $cache->set($cachekey, $result);
         return $result;
     }
 }

@@ -32,11 +32,14 @@ $string['activeusers_help'] = 'Konten mit einem Website-Zugriff (lastaccess) inn
 $string['admindashboard:view'] = 'Admin-Dashboard ansehen';
 $string['backtodashboard'] = 'Zurück zum Dashboard';
 $string['boostunionsettings'] = 'Boost-Union-Theme-Einstellungen';
+$string['cachepurged'] = 'Cache geleert - die Zahlen unten sind frisch berechnet.';
 $string['courseswithoutenddate'] = 'Kurse ohne Enddatum';
 $string['courseswithoutenddate_none'] = 'Keine Kurse ohne Enddatum gefunden - hier gibt es nichts zu melden.';
 $string['dashboardintro'] = 'Übersicht über Nutzer- und Kursaktivität site-weit und pro konfigurierter Schule, plus Datenhygiene- und Infrastruktur-Signale, die Aufmerksamkeit brauchen. Klick auf eine Health-Signal-Kachel öffnet die zugehörige Liste bzw. den Bericht.';
 $string['duplicateemails'] = 'Doppelte E-Mail-Adressen';
 $string['duplicateemails_none'] = 'Keine doppelten E-Mail-Adressen gefunden - hier gibt es nichts zu melden.';
+$string['eventdashboardviewed'] = 'Admin-Dashboard angesehen';
+$string['lastcomputed'] = 'Stand: {$a}, wird täglich aktualisiert.';
 $string['mergeusershint'] = 'Diese Liste ist ein Ausgangspunkt, um zusammenzuführende Konten zu identifizieren. '
     . 'Das Admin-Tool "Merge user accounts" (tool_mergeusers) ist auf dieser Instanz nicht installiert, daher '
     . 'wird hier kein direkter Link angezeigt - installiere es, um Konten tatsächlich zusammenzuführen.';
@@ -57,6 +60,7 @@ $string['onesided_intro'] = 'Diese Kürzel sind nur einseitig gepflegt (Kohorte 
 $string['onesided_none'] = 'Alle Kohorten und Top-Level-Kategorien mit idnumber sind vollständig gepaart - hier gibt es nichts zu melden.';
 $string['onesidedwarning'] = 'Einseitige Zuordnungen';
 $string['pluginname'] = 'Admin Dashboard';
+$string['purgecache'] = 'Jetzt aktualisieren';
 $string['schoolcard_coursemanagement'] = 'Kursverwaltung';
 $string['schooltile_activemembers'] = 'Aktive Mitglieder';
 $string['schooltile_coursecount'] = 'Kurse';

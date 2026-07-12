@@ -67,6 +67,8 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
             'schools' => $this->export_schools($output),
             'noschoolsconfigured' => empty($this->get_active_matched_schools()),
             'settingsurl' => (new \core\url('/admin/settings.php', ['section' => 'local_admindashboard_settings']))->out(false),
+            'lastcomputedtext' => $this->export_lastcomputedtext(),
+            'sesskey' => sesskey(),
             'healthsignals' => $this->export_health_signals($output),
             'navgroups' => $this->export_nav_groups(),
         ];
@@ -115,6 +117,23 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
                 'helpicon' => $output->help_icon('newinperiod', 'local_admindashboard'),
             ],
         ];
+    }
+
+    /**
+     * Builds the "Stand: ..." note shown below the global metrics.
+     *
+     * Every cached value on this page shares the same 1-day TTL and (in the
+     * common case of a cold cache) gets computed together on the same
+     * request, so the global user metrics' computedat is used as a
+     * representative timestamp for the whole page rather than tracking one
+     * per section - simpler, and accurate enough for "are these numbers
+     * roughly a day old or fresh" at a glance.
+     *
+     * @return string
+     */
+    private function export_lastcomputedtext(): string {
+        $metrics = user_metrics::get_metrics($this->timerangedays);
+        return get_string('lastcomputed', 'local_admindashboard', userdate($metrics->computedat));
     }
 
     /**

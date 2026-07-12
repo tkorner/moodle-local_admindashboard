@@ -33,11 +33,14 @@ $string['activeusers_link'] = 'https://github.com/tkorner/moodle-local_admindash
 $string['admindashboard:view'] = 'View the admin dashboard';
 $string['backtodashboard'] = 'Back to dashboard';
 $string['boostunionsettings'] = 'Boost Union theme settings';
+$string['cachepurged'] = 'Cache cleared - the numbers below are freshly computed.';
 $string['courseswithoutenddate'] = 'Courses without an end date';
 $string['courseswithoutenddate_none'] = 'No courses without an end date - nothing to report here.';
 $string['dashboardintro'] = 'Overview of user and course activity across the whole site and per configured school, plus data-hygiene and infrastructure signals that need attention. Click any health signal tile to see the underlying list or report.';
 $string['duplicateemails'] = 'Duplicate email addresses';
 $string['duplicateemails_none'] = 'No duplicate email addresses found - nothing to report here.';
+$string['eventdashboardviewed'] = 'Viewed admin dashboard';
+$string['lastcomputed'] = 'As of: {$a}, updates daily.';
 $string['mergeusershint'] = 'This list is a starting point for identifying accounts to merge. The '
     . '"Merge user accounts" admin tool (tool_mergeusers) is not installed on this instance, so no direct '
     . 'link is shown here - install it to actually merge two accounts.';
@@ -59,6 +62,7 @@ $string['onesided_intro'] = 'These codes are only maintained on one side (cohort
 $string['onesided_none'] = 'All cohorts and top-level categories with an idnumber are fully matched - nothing to report here.';
 $string['onesidedwarning'] = 'One-sided matches';
 $string['pluginname'] = 'Admin Dashboard';
+$string['purgecache'] = 'Refresh now';
 $string['schoolcard_coursemanagement'] = 'Course management';
 $string['schooltile_activemembers'] = 'Active members';
 $string['schooltile_coursecount'] = 'Courses';

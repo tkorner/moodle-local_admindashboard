@@ -46,13 +46,38 @@ namespace local_admindashboard\metrics;
  */
 class user_metrics {
     /**
-     * Computes the three global user metrics from SPEC section 3.
+     * Returns the three global user metrics from SPEC section 3, from cache
+     * where possible (see db/caches.php - 1 day TTL, since these numbers are
+     * deliberately not live).
      *
      * @param int $timerangedays length of the "new in period" window, in days
      * @return \stdClass with totalusers, activeusers (lastaccess in the last
-     *         4 weeks), and newusers (timecreated within $timerangedays)
+     *         4 weeks), newusers (timecreated within $timerangedays), and
+     *         computedat (unix timestamp of when this was last computed,
+     *         not necessarily this request)
      */
     public static function get_metrics(int $timerangedays): \stdClass {
+        $cache = \cache::make('local_admindashboard', 'dashboarddata');
+        $cachekey = 'usermetrics_' . $timerangedays;
+
+        $cached = $cache->get($cachekey);
+        if ($cached !== false) {
+            return $cached;
+        }
+
+        $result = self::compute_metrics($timerangedays);
+        $result->computedat = time();
+        $cache->set($cachekey, $result);
+        return $result;
+    }
+
+    /**
+     * Computes the three global user metrics from SPEC section 3.
+     *
+     * @param int $timerangedays length of the "new in period" window, in days
+     * @return \stdClass with totalusers, activeusers, and newusers
+     */
+    private static function compute_metrics(int $timerangedays): \stdClass {
         $result = new \stdClass();
         $result->totalusers = self::count_total_users();
         $result->activeusers = self::count_recently_active_users();

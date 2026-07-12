@@ -25,6 +25,7 @@
 require(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
+use local_admindashboard\event\dashboard_viewed;
 use local_admindashboard\output\dashboard_page;
 
 admin_externalpage_setup('local_admindashboard');
@@ -37,6 +38,25 @@ $timerangedays = optional_param('timerangedays', $defaulttimerangedays, PARAM_IN
 if (!in_array($timerangedays, $allowedtimeranges, true)) {
     $timerangedays = $defaulttimerangedays;
 }
+
+// Same capability as the page itself (admin_externalpage_setup() above already enforced it) -
+// a separate capability just for "refresh the numbers now" would be over-engineering for an
+// action anyone who can already see the dashboard should reasonably be able to trigger.
+if (optional_param('purgecache', 0, PARAM_BOOL)) {
+    require_sesskey();
+    \cache::make('local_admindashboard', 'dashboarddata')->purge();
+    redirect(
+        new \core\url('/local/admindashboard/index.php', ['timerangedays' => $timerangedays]),
+        get_string('cachepurged', 'local_admindashboard'),
+        null,
+        \core\output\notification::NOTIFY_SUCCESS
+    );
+}
+
+// Fired here, not right after admin_externalpage_setup() above, so a purge-cache request
+// (which redirects away without ever rendering the dashboard) doesn't log a spurious "viewed"
+// event - the capability check already happened via admin_externalpage_setup().
+dashboard_viewed::create(['context' => \core\context\system::instance()])->trigger();
 
 $page = new dashboard_page($timerangedays);
 $renderer = $PAGE->get_renderer('local_admindashboard');
