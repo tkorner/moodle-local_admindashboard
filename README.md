@@ -62,7 +62,11 @@ documented at the point of decision in the relevant class's docblock:
   heuristics, not a reuse of an existing core verdict (`classes/output/dashboard_page.php`).
 - Two SPEC navigation bullets ("Kohorten verwalten / hochladen" and "Kurs-Backup/-Restore")
   are each interpreted as either two links or one, depending on whether a
-  course-agnostic entry point exists (`classes/output/dashboard_page.php::export_nav_groups()`).
+  course-agnostic entry point exists (`classes/navitems_parser.php::default_value()`).
+- The default navigation links carry no capability restriction, matching the
+  pre-Schritt-7h behaviour of showing all of them to anyone who can already
+  see the dashboard; an admin can add one per link via the optional 4th
+  `|`-separated segment (`classes/navitems_parser.php`).
 
 ## Capability
 
@@ -75,10 +79,10 @@ other plugin configuration page.
 
 1. Place the folder at `moodle/local/admindashboard`.
 2. Site administration → Notifications, to trigger the install/upgrade.
-3. Configure active school codes, the default time range, and (optionally)
-   what to call a "school" on this instance (e.g. Site, Department,
-   Faculty) at Site administration → Plugins → Local plugins →
-   Admin Dashboard.
+3. Configure active school codes, the default time range, what to call a
+   "school" on this instance (e.g. Site, Department, Faculty), and
+   (optionally) the navigation links shown at the bottom of the dashboard,
+   at Site administration → Plugins → Local plugins → Admin Dashboard.
 4. Open the dashboard at Site administration → Reports → Admin Dashboard.
 
 ## Screenshots
@@ -110,6 +114,8 @@ docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cl
 docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_user_metrics.php
 docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_school_metrics.php
 docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_health_signals.php
+docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_emptystate.php
+docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_navitems.php
 ```
 
 These are a sanity check, not a substitute for the PHPUnit suite under

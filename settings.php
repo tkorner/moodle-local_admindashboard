@@ -123,6 +123,31 @@ if ($hassiteconfig) {
             get_string('onesidedwarning', 'local_admindashboard'),
             $warningtext
         ));
+
+        // Config never having been saved (get_config() === false, e.g. right after this setting was
+        // added by an upgrade) is treated the same as "use the built-in default" - not the same as an
+        // admin having since deliberately saved the textarea empty, which must stay empty (Schritt 10-
+        // style empty state, see dashboard_page.php). A loose ?: check would conflate the two.
+        $navitemsraw = get_config('local_admindashboard', 'navitems');
+        if ($navitemsraw === false) {
+            $navitemsraw = \local_admindashboard\navitems_parser::default_value();
+        }
+        $parsed = \local_admindashboard\navitems_parser::parse($navitemsraw);
+        if ($parsed->errorlines > 0) {
+            $settings->add(new admin_setting_description(
+                'local_admindashboard/navitems_parseerror',
+                '',
+                get_string('navitems_parseerror', 'local_admindashboard', $parsed->errorlines)
+            ));
+        }
+
+        $settings->add(new admin_setting_configtextarea(
+            'local_admindashboard/navitems',
+            get_string('navitems', 'local_admindashboard'),
+            get_string('navitems_desc', 'local_admindashboard'),
+            \local_admindashboard\navitems_parser::default_value(),
+            PARAM_RAW
+        ));
     }
 
     $ADMIN->add('localplugins', $settings);

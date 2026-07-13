@@ -60,7 +60,8 @@
         ],
         "navgroups": [
             {"title": "User management", "items": [{"label": "Upload users", "url": "http://example.com/y.php"}]}
-        ]
+        ],
+        "nonavitemsconfigured": false
     }
 }}
 <div class="local-admindashboard">
@@ -158,6 +159,12 @@
     </div>
 
     <h3>{{#str}} section_navigation, local_admindashboard {{/str}}</h3>
+    {{#nonavitemsconfigured}}
+    <p>
+        {{#str}} nonavitemsconfigured, local_admindashboard {{/str}}
+        <a href="{{settingsurl}}">{{#str}} noschoolsconfigured_linktext, local_admindashboard {{/str}}</a>
+    </p>
+    {{/nonavitemsconfigured}}
     <div class="row">
         {{#navgroups}}
         <div class="col-sm-4 mb-4">

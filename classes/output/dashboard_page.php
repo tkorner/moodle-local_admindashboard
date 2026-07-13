@@ -29,6 +29,7 @@
 
 namespace local_admindashboard\output;
 
+use local_admindashboard\navitems_parser;
 use local_admindashboard\school_matcher;
 use local_admindashboard\metrics\health_signals;
 use local_admindashboard\metrics\school_metrics;
@@ -59,6 +60,7 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      */
     public function export_for_template(\core\output\renderer_base $output): array {
         $grouping = $this->grouping_label();
+        $navgroups = $this->export_nav_groups();
 
         return [
             'introtext' => get_string('dashboardintro', 'local_admindashboard', $grouping),
@@ -73,7 +75,8 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
             'lastcomputedtext' => $this->export_lastcomputedtext(),
             'sesskey' => sesskey(),
             'healthsignals' => $this->export_health_signals($output),
-            'navgroups' => $this->export_nav_groups(),
+            'navgroups' => $navgroups,
+            'nonavitemsconfigured' => empty($navgroups),
         ];
     }
 
@@ -421,95 +424,41 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
     }
 
     /**
-     * Builds the "Navigation" boxes (SPEC section 5).
+     * Builds the "Navigation" boxes (SPEC section 5) from the 'navitems'
+     * setting (Schritt 7h: configurable instead of hardcoded).
      *
-     * tool_mergeusers and theme_boost_union are not shipped with core, so
-     * their links are only included when \core\plugin_manager confirms they
-     * are actually installed - same approach as duplicateemails.php.
+     * Groups and their items come from navitems_parser::parse() in the
+     * order they first appear in the setting. Items with a configured
+     * capability are only included if the current user actually has it
+     * (system context - this dashboard is deliberately for system-wide
+     * administrators only, see SPEC section 9's "explicitly out of scope").
+     * Groups that end up with zero visible items (all filtered out, or none
+     * ever parsed for that group) are dropped rather than shown as an empty
+     * card with a heading and nothing under it.
      *
      * @return array of stdClass: title, items (array of stdClass: label, url)
      */
     private function export_nav_groups(): array {
-        $pluginman = \core\plugin_manager::instance();
-
-        $usermanagement = [
-            (object) [
-                'label' => get_string('pluginname', 'tool_uploaduser'),
-                'url' => (new \core\url('/admin/tool/uploaduser/index.php'))->out(false),
-            ],
-            (object) [
-                'label' => get_string('cohorts', 'cohort'),
-                'url' => (new \core\url('/cohort/index.php'))->out(false),
-            ],
-            (object) [
-                'label' => get_string('uploadcohorts', 'cohort'),
-                'url' => (new \core\url('/cohort/upload.php'))->out(false),
-            ],
-        ];
-        if ($pluginman->get_plugin_info('tool_mergeusers')) {
-            $usermanagement[] = (object) [
-                'label' => get_string('pluginname', 'tool_mergeusers'),
-                'url' => (new \core\url('/admin/tool/mergeusers/index.php'))->out(false),
-            ];
+        $rawnavitems = get_config('local_admindashboard', 'navitems');
+        if ($rawnavitems === false) {
+            // Never saved (e.g. right after this setting was added by an upgrade) - not the same as an
+            // admin having since deliberately emptied it, which must stay empty (see 'nonavitemsconfigured'
+            // in export_for_template()). A loose ?: check would conflate the two, unlike here.
+            $rawnavitems = navitems_parser::default_value();
         }
 
-        $coursemanagement = [
-            (object) [
-                'label' => get_string('addnewcourse', 'core'),
-                'url' => (new \core\url('/course/edit.php'))->out(false),
-            ],
-            (object) [
-                'label' => get_string('managecategories', 'core'),
-                'url' => (new \core\url('/course/management.php'))->out(false),
-            ],
-            (object) [
-                'label' => get_string('restorecourse', 'admin'),
-                'url' => (new \core\url(
-                    '/backup/restorefile.php',
-                    ['contextid' => \core\context\system::instance()->id]
-                ))->out(false),
-            ],
-        ];
-
-        $reports = [
-            (object) [
-                'label' => get_string('customreports', 'core_reportbuilder'),
-                'url' => (new \core\url('/reportbuilder/index.php'))->out(false),
-            ],
-            (object) [
-                'label' => get_string('logs', 'core'),
-                'url' => (new \core\url('/report/log/index.php'))->out(false),
-            ],
-            (object) [
-                'label' => get_string('pluginname', 'report_configlog'),
-                'url' => (new \core\url('/report/configlog/index.php'))->out(false),
-            ],
-        ];
-
-        $system = [
-            (object) [
-                'label' => get_string('scheduledtasks', 'tool_task'),
-                'url' => (new \core\url('/admin/tool/task/scheduledtasks.php'))->out(false),
-            ],
-        ];
-
-        $navgroups = [
-            (object) ['title' => get_string('navgroup_users', 'local_admindashboard'), 'items' => $usermanagement],
-            (object) ['title' => get_string('navgroup_courses', 'local_admindashboard'), 'items' => $coursemanagement],
-            (object) ['title' => get_string('navgroup_reports', 'local_admindashboard'), 'items' => $reports],
-            (object) ['title' => get_string('navgroup_system', 'local_admindashboard'), 'items' => $system],
-        ];
-
-        if ($pluginman->get_plugin_info('theme_boost_union')) {
-            $navgroups[] = (object) [
-                'title' => get_string('navgroup_theme', 'local_admindashboard'),
-                'items' => [
-                    (object) [
-                        'label' => get_string('boostunionsettings', 'local_admindashboard'),
-                        'url' => (new \core\url('/theme/boost_union/settings_overview.php'))->out(false),
-                    ],
-                ],
-            ];
+        $navgroups = [];
+        foreach (navitems_parser::parse((string) $rawnavitems)->groups as $group) {
+            $items = [];
+            foreach ($group->items as $item) {
+                if ($item->capability !== '' && !has_capability($item->capability, \core\context\system::instance())) {
+                    continue;
+                }
+                $items[] = (object) ['label' => $item->label, 'url' => $item->url];
+            }
+            if (!empty($items)) {
+                $navgroups[] = (object) ['title' => $group->title, 'items' => $items];
+            }
         }
 
         return $navgroups;
