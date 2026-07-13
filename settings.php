@@ -108,6 +108,12 @@ if ($hassiteconfig) {
         if (empty($onesided)) {
             $warningtext = get_string('onesided_none', 'local_admindashboard');
         } else {
+            // The German onesided_intro string deliberately does not use {$a}: "aktive Schule" vs.
+            // "aktiver Standort" vs. "aktive Abteilung" need different adjective endings depending on
+            // the configured word's grammatical gender, which a free-text setting can't guarantee. The
+            // $grouping argument below is simply ignored by that string (get_string() allows passing an
+            // unused $a). A comment explaining this can't live in the lang file itself - Moodle's
+            // LangFilesOrdering sniff flags any comment interspersed between $string[] lines.
             $warningtext = get_string('onesided_intro', 'local_admindashboard', $grouping)
                 . \core\output\html_writer::alist($onesided);
         }

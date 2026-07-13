@@ -58,9 +58,6 @@ $string['noschoolsconfigured'] = '0 Kürzel aktiv konfiguriert.';
 $string['noschoolsconfigured_linktext'] = 'Zu den Einstellungen';
 $string['onesided_categoryonly'] = '{$a}: Top-Level-Kategorie vorhanden, aber keine passende Kohorte';
 $string['onesided_cohortonly'] = '{$a}: Kohorte vorhanden, aber keine passende Top-Level-Kategorie';
-// Uses the fixed generic term instead of {$a} (groupinglabel) on purpose: "aktive Schule" vs.
-// "aktiver Standort" vs. "aktive Abteilung" need different adjective endings depending on the
-// configured word's grammatical gender, which a free-text setting can't guarantee.
 $string['onesided_intro'] = 'Diese Kürzel sind nur einseitig gepflegt (Kohorte oder Kategorie, nicht beides) und können nicht als aktive Kohorten-/Kategorie-Gruppierung ausgewählt werden:';
 $string['onesided_none'] = 'Alle Kohorten und Top-Level-Kategorien mit idnumber sind vollständig gepaart - hier gibt es nichts zu melden.';
 $string['onesidedwarning'] = 'Einseitige Zuordnungen';
