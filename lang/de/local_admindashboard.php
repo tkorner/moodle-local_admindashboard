@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['activeschools'] = 'Aktive Schul-Kürzel';
+$string['activeschools'] = 'Aktive {$a}-Kürzel';
 $string['activeschools_desc'] = 'Nur vollständig gepaarte Kürzel (Kohorte und Top-Level-Kategorie mit identischer idnumber) stehen hier zur Auswahl. Sie werden auf dem Dashboard angezeigt.';
 $string['activeschools_option'] = '{$a->idnumber} ({$a->cohortname} / {$a->categoryname})';
 $string['activeusers'] = 'Aktiv';
@@ -35,10 +35,12 @@ $string['boostunionsettings'] = 'Boost-Union-Theme-Einstellungen';
 $string['cachepurged'] = 'Cache geleert - die Zahlen unten sind frisch berechnet.';
 $string['courseswithoutenddate'] = 'Kurse ohne Enddatum';
 $string['courseswithoutenddate_none'] = 'Keine Kurse ohne Enddatum gefunden - hier gibt es nichts zu melden.';
-$string['dashboardintro'] = 'Übersicht über Nutzer- und Kursaktivität site-weit und pro konfigurierter Schule, plus Datenhygiene- und Infrastruktur-Signale, die Aufmerksamkeit brauchen. Klick auf eine Health-Signal-Kachel öffnet die zugehörige Liste bzw. den Bericht.';
+$string['dashboardintro'] = 'Übersicht über Nutzer- und Kursaktivität site-weit und pro {$a}, plus Datenhygiene- und Infrastruktur-Signale, die Aufmerksamkeit brauchen. Klick auf eine Health-Signal-Kachel öffnet die zugehörige Liste bzw. den Bericht.';
 $string['duplicateemails'] = 'Doppelte E-Mail-Adressen';
 $string['duplicateemails_none'] = 'Keine doppelten E-Mail-Adressen gefunden - hier gibt es nichts zu melden.';
 $string['eventdashboardviewed'] = 'Admin-Dashboard angesehen';
+$string['groupinglabel'] = 'Bezeichnung der Gruppierung';
+$string['groupinglabel_desc'] = 'Wie eine "Gruppierung" (eine Kohorte und eine Top-Level-Kategorie mit identischer idnumber) im Dashboard genannt werden soll - z.B. Schule, Standort, Abteilung oder Fakultät. Rein kosmetisch: ändert nur die Formulierung, nie die Zuordnungslogik oder Auswahl.';
 $string['lastcomputed'] = 'Stand: {$a}, wird täglich aktualisiert.';
 $string['mergeusershint'] = 'Diese Liste ist ein Ausgangspunkt, um zusammenzuführende Konten zu identifizieren. '
     . 'Das Admin-Tool "Merge user accounts" (tool_mergeusers) ist auf dieser Instanz nicht installiert, daher '
@@ -56,7 +58,10 @@ $string['noschoolsconfigured'] = '0 Kürzel aktiv konfiguriert.';
 $string['noschoolsconfigured_linktext'] = 'Zu den Einstellungen';
 $string['onesided_categoryonly'] = '{$a}: Top-Level-Kategorie vorhanden, aber keine passende Kohorte';
 $string['onesided_cohortonly'] = '{$a}: Kohorte vorhanden, aber keine passende Top-Level-Kategorie';
-$string['onesided_intro'] = 'Diese Kürzel sind nur einseitig gepflegt (Kohorte oder Kategorie, nicht beides) und können nicht als aktive Schule ausgewählt werden:';
+// Uses the fixed generic term instead of {$a} (groupinglabel) on purpose: "aktive Schule" vs.
+// "aktiver Standort" vs. "aktive Abteilung" need different adjective endings depending on the
+// configured word's grammatical gender, which a free-text setting can't guarantee.
+$string['onesided_intro'] = 'Diese Kürzel sind nur einseitig gepflegt (Kohorte oder Kategorie, nicht beides) und können nicht als aktive Kohorten-/Kategorie-Gruppierung ausgewählt werden:';
 $string['onesided_none'] = 'Alle Kohorten und Top-Level-Kategorien mit idnumber sind vollständig gepaart - hier gibt es nichts zu melden.';
 $string['onesidedwarning'] = 'Einseitige Zuordnungen';
 $string['pluginname'] = 'Admin Dashboard';
@@ -70,7 +75,7 @@ $string['schooltile_newmembers'] = 'Neuzugänge';
 $string['section_globalusers'] = 'Globale Nutzer-Kennzahlen';
 $string['section_healthsignals'] = 'Health-Signale';
 $string['section_navigation'] = 'Navigation';
-$string['section_schools'] = 'Pro Schule';
+$string['section_schools'] = 'Pro {$a}';
 $string['signal_cron'] = 'Cron-Status';
 $string['signal_cron_failedtasks'] = '{$a} fehlgeschlagene Task(s) in den letzten 24h.';
 $string['signal_cron_help'] = 'Zeit seit dem letzten cron.php-Lauf und Anzahl der in den letzten 24 Stunden fehlgeschlagenen geplanten Tasks. Klick auf die Kachel öffnet die Übersicht der geplanten Tasks.';

@@ -58,8 +58,11 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      * @return array
      */
     public function export_for_template(\core\output\renderer_base $output): array {
+        $grouping = $this->grouping_label();
+
         return [
-            'introtext' => get_string('dashboardintro', 'local_admindashboard'),
+            'introtext' => get_string('dashboardintro', 'local_admindashboard', $grouping),
+            'groupinglabel' => $grouping,
             'timerangedays' => $this->timerangedays,
             'timerangeoptions' => $this->export_timerange_options(),
             'dashboardurl' => (new \core\url('/local/admindashboard/index.php'))->out(false),
@@ -72,6 +75,18 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
             'healthsignals' => $this->export_health_signals($output),
             'navgroups' => $this->export_nav_groups(),
         ];
+    }
+
+    /**
+     * Reads the configurable term for what a "school" is called on this
+     * instance (Schritt 9: generalisation away from a hardcoded "school").
+     * Falls back to the setting's own default if not yet set (e.g. right
+     * after install, before the first upgrade has written it).
+     *
+     * @return string
+     */
+    private function grouping_label(): string {
+        return (string) get_config('local_admindashboard', 'groupinglabel') ?: 'Schule';
     }
 
     /**

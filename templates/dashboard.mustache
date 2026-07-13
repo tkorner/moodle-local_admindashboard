@@ -23,6 +23,7 @@
     Example context (json):
     {
         "introtext": "Overview of user and course activity...",
+        "groupinglabel": "School",
         "timerangedays": 180,
         "timerangeoptions": [
             {"value": 30, "label": "30 days", "selected": false},
@@ -108,10 +109,10 @@
         {{/usermetrics}}
     </div>
 
-    <h3>{{#str}} section_schools, local_admindashboard {{/str}}</h3>
+    <h3>{{#str}} section_schools, local_admindashboard, {{groupinglabel}} {{/str}}</h3>
     {{#noschoolsconfigured}}
     <p>
-        {{#str}} noschoolsconfigured, local_admindashboard {{/str}}
+        {{#str}} noschoolsconfigured, local_admindashboard, {{groupinglabel}} {{/str}}
         <a href="{{settingsurl}}">{{#str}} noschoolsconfigured_linktext, local_admindashboard {{/str}}</a>
     </p>
     {{/noschoolsconfigured}}

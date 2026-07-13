@@ -53,6 +53,18 @@ if ($hassiteconfig) {
     // idnumber match, so only do it when the full settings page is actually rendered
     // (not on every admin tree build, e.g. for navigation or search).
     if ($ADMIN->fulltree) {
+        // The default is a literal value, not a get_string() lookup - it is the actual stored
+        // config value (what this instance currently calls the grouping), not translatable UI
+        // copy, so it must not vary by the admin's interface language.
+        $settings->add(new admin_setting_configtext(
+            'local_admindashboard/groupinglabel',
+            get_string('groupinglabel', 'local_admindashboard'),
+            get_string('groupinglabel_desc', 'local_admindashboard'),
+            'Schule',
+            PARAM_TEXT
+        ));
+        $grouping = (string) get_config('local_admindashboard', 'groupinglabel') ?: 'Schule';
+
         $settings->add(new admin_setting_configselect(
             'local_admindashboard/timerangedays',
             get_string('timerangedays', 'local_admindashboard'),
@@ -79,7 +91,7 @@ if ($hassiteconfig) {
 
         $settings->add(new admin_setting_configmultiselect(
             'local_admindashboard/activeschools',
-            get_string('activeschools', 'local_admindashboard'),
+            get_string('activeschools', 'local_admindashboard', $grouping),
             get_string('activeschools_desc', 'local_admindashboard'),
             [],
             $schoolchoices
@@ -96,7 +108,7 @@ if ($hassiteconfig) {
         if (empty($onesided)) {
             $warningtext = get_string('onesided_none', 'local_admindashboard');
         } else {
-            $warningtext = get_string('onesided_intro', 'local_admindashboard')
+            $warningtext = get_string('onesided_intro', 'local_admindashboard', $grouping)
                 . \core\output\html_writer::alist($onesided);
         }
 

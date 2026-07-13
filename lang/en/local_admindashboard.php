@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['activeschools'] = 'Active school codes';
+$string['activeschools'] = 'Active {$a} codes';
 $string['activeschools_desc'] = 'Only fully matched codes (cohort and top-level category share the same idnumber) can be selected here. They are shown on the dashboard.';
 $string['activeschools_option'] = '{$a->idnumber} ({$a->cohortname} / {$a->categoryname})';
 $string['activeusers'] = 'Active';
@@ -36,10 +36,12 @@ $string['boostunionsettings'] = 'Boost Union theme settings';
 $string['cachepurged'] = 'Cache cleared - the numbers below are freshly computed.';
 $string['courseswithoutenddate'] = 'Courses without an end date';
 $string['courseswithoutenddate_none'] = 'No courses without an end date - nothing to report here.';
-$string['dashboardintro'] = 'Overview of user and course activity across the whole site and per configured school, plus data-hygiene and infrastructure signals that need attention. Click any health signal tile to see the underlying list or report.';
+$string['dashboardintro'] = 'Overview of user and course activity across the whole site and per configured {$a}, plus data-hygiene and infrastructure signals that need attention. Click any health signal tile to see the underlying list or report.';
 $string['duplicateemails'] = 'Duplicate email addresses';
 $string['duplicateemails_none'] = 'No duplicate email addresses found - nothing to report here.';
 $string['eventdashboardviewed'] = 'Viewed admin dashboard';
+$string['groupinglabel'] = 'Grouping label';
+$string['groupinglabel_desc'] = 'What to call a "grouping" (a cohort and a top-level category sharing the same idnumber) in the dashboard UI - e.g. School, Site, Department, or Faculty. Purely cosmetic: it only changes wording, never how groupings are matched or selected.';
 $string['lastcomputed'] = 'As of: {$a}, updates daily.';
 $string['mergeusershint'] = 'This list is a starting point for identifying accounts to merge. The '
     . '"Merge user accounts" admin tool (tool_mergeusers) is not installed on this instance, so no direct '
@@ -54,11 +56,11 @@ $string['navgroup_users'] = 'User management';
 $string['newinperiod'] = 'New in period';
 $string['newinperiod_help'] = 'Counts records (user accounts, cohort members, or courses) created/added within the time range selected at the top of the page. Change the dropdown above to adjust it.';
 $string['newinperiod_link'] = 'https://github.com/tkorner/moodle-local_admindashboard';
-$string['noschoolsconfigured'] = '0 active school codes are configured.';
+$string['noschoolsconfigured'] = '0 active {$a} codes are configured.';
 $string['noschoolsconfigured_linktext'] = 'Go to settings';
 $string['onesided_categoryonly'] = '{$a}: a top-level category exists, but no matching cohort';
 $string['onesided_cohortonly'] = '{$a}: a cohort exists, but no matching top-level category';
-$string['onesided_intro'] = 'These codes are only maintained on one side (cohort or category), not both, and cannot be selected as an active school:';
+$string['onesided_intro'] = 'These codes are only maintained on one side (cohort or category), not both, and cannot be selected as an active {$a}:';
 $string['onesided_none'] = 'All cohorts and top-level categories with an idnumber are fully matched - nothing to report here.';
 $string['onesidedwarning'] = 'One-sided matches';
 $string['pluginname'] = 'Admin Dashboard';
@@ -72,7 +74,7 @@ $string['schooltile_newmembers'] = 'New members';
 $string['section_globalusers'] = 'Global user metrics';
 $string['section_healthsignals'] = 'Health signals';
 $string['section_navigation'] = 'Navigation';
-$string['section_schools'] = 'Per school';
+$string['section_schools'] = 'Per {$a}';
 $string['signal_cron'] = 'Cron status';
 $string['signal_cron_failedtasks'] = '{$a} failed task(s) in the last 24h.';
 $string['signal_cron_help'] = 'Time since the last cron.php run and the number of scheduled tasks that failed in the last 24 hours. Click the tile to open the scheduled tasks overview.';
