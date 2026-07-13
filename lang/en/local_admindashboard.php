@@ -64,6 +64,7 @@ $string['onesided_intro'] = 'These codes are only maintained on one side (cohort
 $string['onesided_none'] = 'All cohorts and top-level categories with an idnumber are fully matched - nothing to report here.';
 $string['onesidedwarning'] = 'One-sided matches';
 $string['pluginname'] = 'Admin Dashboard';
+$string['privacy:metadata'] = 'The Admin Dashboard plugin does not store any personal data. All numbers shown are computed on request from existing Moodle core data (users, cohorts, courses, task logs) and are never written anywhere by this plugin.';
 $string['purgecache'] = 'Refresh now';
 $string['schoolcard_coursemanagement'] = 'Course management';
 $string['schooltile_activemembers'] = 'Active members';

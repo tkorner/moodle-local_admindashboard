@@ -65,6 +65,7 @@ $string['onesided_intro'] = 'Diese Kürzel sind nur einseitig gepflegt (Kohorte 
 $string['onesided_none'] = 'Alle Kohorten und Top-Level-Kategorien mit idnumber sind vollständig gepaart - hier gibt es nichts zu melden.';
 $string['onesidedwarning'] = 'Einseitige Zuordnungen';
 $string['pluginname'] = 'Admin Dashboard';
+$string['privacy:metadata'] = 'Das Admin-Dashboard-Plugin speichert keine personenbezogenen Daten. Alle angezeigten Zahlen werden bei Aufruf aus bestehenden Moodle-Core-Daten (Nutzer, Kohorten, Kurse, Task-Logs) berechnet und von diesem Plugin nirgendwo geschrieben.';
 $string['purgecache'] = 'Jetzt aktualisieren';
 $string['schoolcard_coursemanagement'] = 'Kursverwaltung';
 $string['schooltile_activemembers'] = 'Aktive Mitglieder';

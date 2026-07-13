@@ -75,9 +75,15 @@ other plugin configuration page.
 
 1. Place the folder at `moodle/local/admindashboard`.
 2. Site administration → Notifications, to trigger the install/upgrade.
-3. Configure active school codes and the default time range at Site
-   administration → Plugins → Local plugins → Admin Dashboard.
+3. Configure active school codes, the default time range, and (optionally)
+   what to call a "school" on this instance (e.g. Site, Department,
+   Faculty) at Site administration → Plugins → Local plugins →
+   Admin Dashboard.
 4. Open the dashboard at Site administration → Reports → Admin Dashboard.
+
+## Screenshots
+
+To be added: main dashboard view and the settings page.
 
 ## Compatibility
 
@@ -85,7 +91,8 @@ Targets Moodle 5.1 and 5.2, PHP 8.3 and 8.4 - enforced by the CI matrix
 below (`version.php`'s `requires` is pinned to the Moodle 5.1.0 branching
 version). Also manually live-verified end-to-end (real HTTP sessions
 against a running instance, not just unit tests) throughout development
-against a Moodle 5.2.1 container.
+against a Moodle 5.2.1 container. No third-party JS/CSS libraries and no
+additional PHP dependencies - nothing beyond Moodle core is used.
 
 ## Tests & CI
 
