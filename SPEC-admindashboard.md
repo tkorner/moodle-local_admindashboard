@@ -125,10 +125,12 @@ Gruppiert nach Aufgabentyp, reine Links ohne Logik:
 
 ## 8. Offene Punkte vor Implementierungsstart
 
-1. Zählt die Kurszahl pro Schule Kurse aus Subkategorien mit? (Annahme: ja, siehe Abschnitt 3)
-2. Exakte Core-Klasse/-API zur Security-Overview-Aggregation identifizieren
-3. Exakte URL/Parameter für Scheduled-Tasks-Übersicht und für gefilterte Nutzerlisten (falls für Klick-Ziele der Health-Signale benötigt)
-4. Exakte Section-URL der Boost-Union-Theme-Einstellungen
+Stand Schritt 12 (siehe CLAUDE.md "Zwingende Recherche-Punkte" für die Fundstellen im Code): alle vier Punkte sind geklärt, hier zur historischen Nachvollziehbarkeit unverändert belassen.
+
+1. Zählt die Kurszahl pro Schule Kurse aus Subkategorien mit? (Annahme: ja, siehe Abschnitt 3) – ✅ bestätigt und umgesetzt (`classes/metrics/school_metrics.php`)
+2. Exakte Core-Klasse/-API zur Security-Overview-Aggregation identifizieren – ✅ `\core\check\manager::get_checks('security')` (`classes/metrics/health_signals.php`)
+3. Exakte URL/Parameter für Scheduled-Tasks-Übersicht und für gefilterte Nutzerlisten – ✅ `/admin/tool/task/scheduledtasks.php`; gefilterte Nutzerlisten wurden nicht benötigt (die Health-Signal-Klickziele sind eigene Drill-down-Seiten, siehe Abschnitt 4)
+4. Exakte Section-URL der Boost-Union-Theme-Einstellungen – ✅ `/theme/boost_union/settings_overview.php` (`classes/navitems_parser.php`)
 
 ---
 
