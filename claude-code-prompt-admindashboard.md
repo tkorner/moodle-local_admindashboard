@@ -10,7 +10,7 @@ Vor Schritt 1: `SPEC-admindashboard.md` in dasselbe Verzeichnis wie `CLAUDE.md` 
 
 PHPUnit-Testdateien werden trotzdem geschrieben (laufen nur nicht lokal, sondern über CI) – nicht weglassen.
 
-**Fortschritt:** Schritt 0 und Schritt 1 sind bereits umgesetzt (Grundgerüst + `school_matcher`). Weiter ab Schritt 0b.
+**Fortschritt:** Schritt 0 bis 8 sowie 9 und 10 sind umgesetzt (siehe Release 1.0.0 und 1.1.0). Offen: Schritt 7h (Navigation konfigurierbar machen), 11 (Plugin-Directory-Voraussetzungen), 12 (Abschluss-Review).
 
 ---
 
