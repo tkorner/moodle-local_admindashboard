@@ -2,7 +2,7 @@
 
 # Admin Dashboard (Moodle local plugin)
 
-A single-page overview for Moodle administrators: global and per-school user
+A single-page overview for Moodle administrators: global and per-group user
 metrics, data-hygiene and infrastructure health signals (each with a
 click-through to fix or investigate), and a grouped set of shortcuts to the
 admin pages you end up needing most.
@@ -10,19 +10,29 @@ admin pages you end up needing most.
 ## Why this plugin exists
 
 Getting a picture of a Moodle instance's health today means visiting half a
-dozen different pages: user counts, cohort membership per school, the
+dozen different pages: user counts, cohort membership per group, the
 security overview report, the scheduled tasks page, and so on. This plugin
 puts the numbers that matter on one page and makes every health signal
 clickable - a number on its own is a statistic, a number with a click-target
 is something you can act on.
 
-## What a "school" is
+## What a "school" (or whatever you call it) is
 
-A school is **two independently maintained Moodle objects sharing one code**:
-a system-wide cohort and a top-level course category, matched purely by their
-`idnumber` (never by display name). Codes with only one side present (a
-cohort with no matching category, or vice versa) show up as a warning on the
-settings page rather than being silently ignored.
+Everything below calls this a "school" because that's this plugin's
+historical default term, and it's still what all the internal class/file
+names (`school_matcher`, `school_metrics`, ...) use - renaming those was
+deliberately out of scope, see "Known open assumptions" below. The word
+shown in the dashboard UI itself is a separate, free-text setting
+(`groupinglabel`, e.g. "Site", "Department", "Faculty") and defaults to
+"Schule"/"School" purely for backwards compatibility with earlier versions
+of this plugin, not because the concept is school-specific.
+
+Whatever you call it, a "school" is **two independently maintained Moodle
+objects sharing one code**: a system-wide cohort and a top-level course
+category, matched purely by their `idnumber` (never by display name). Codes
+with only one side present (a cohort with no matching category, or vice
+versa) show up as a warning on the settings page rather than being silently
+ignored.
 
 ## Design principles / guardrails
 
