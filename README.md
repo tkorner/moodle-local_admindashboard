@@ -108,6 +108,15 @@ docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cl
 These are a sanity check, not a substitute for the PHPUnit suite under
 `tests/`, which runs via CI.
 
+## Development
+
+Built with [Claude Code](https://claude.com/claude-code) (Anthropic's AI
+coding assistant) in an iterative, step-by-step process with human review
+after each step. Every core API claim in this README was verified against
+actual Moodle core source rather than assumed, and most steps were also
+live-tested end-to-end against a running Moodle instance (real HTTP
+sessions, real data) before being committed.
+
 ## License
 
 GPL v3 or later - see [`LICENSE`](LICENSE).
