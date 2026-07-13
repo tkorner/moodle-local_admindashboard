@@ -115,42 +115,47 @@ class navitems_parser {
     public static function default_value(): string {
         $pluginman = \core\plugin_manager::instance();
 
+        $groupusers = get_string('navgroup_users', 'local_admindashboard');
+        $groupcourses = get_string('navgroup_courses', 'local_admindashboard');
+        $groupreports = get_string('navgroup_reports', 'local_admindashboard');
+        $groupsystem = get_string('navgroup_system', 'local_admindashboard');
+
         $lines = [
-            self::line(get_string('pluginname', 'tool_uploaduser'), '/admin/tool/uploaduser/index.php',
-                get_string('navgroup_users', 'local_admindashboard')),
-            self::line(get_string('cohorts', 'cohort'), '/cohort/index.php',
-                get_string('navgroup_users', 'local_admindashboard')),
-            self::line(get_string('uploadcohorts', 'cohort'), '/cohort/upload.php',
-                get_string('navgroup_users', 'local_admindashboard')),
+            self::line(get_string('pluginname', 'tool_uploaduser'), '/admin/tool/uploaduser/index.php', $groupusers),
+            self::line(get_string('cohorts', 'cohort'), '/cohort/index.php', $groupusers),
+            self::line(get_string('uploadcohorts', 'cohort'), '/cohort/upload.php', $groupusers),
         ];
         if ($pluginman->get_plugin_info('tool_mergeusers')) {
-            $lines[] = self::line(get_string('pluginname', 'tool_mergeusers'), '/admin/tool/mergeusers/index.php',
-                get_string('navgroup_users', 'local_admindashboard'));
+            $lines[] = self::line(
+                get_string('pluginname', 'tool_mergeusers'),
+                '/admin/tool/mergeusers/index.php',
+                $groupusers
+            );
         }
 
-        $lines[] = self::line(get_string('addnewcourse', 'core'), '/course/edit.php',
-            get_string('navgroup_courses', 'local_admindashboard'));
-        $lines[] = self::line(get_string('managecategories', 'core'), '/course/management.php',
-            get_string('navgroup_courses', 'local_admindashboard'));
+        $lines[] = self::line(get_string('addnewcourse', 'core'), '/course/edit.php', $groupcourses);
+        $lines[] = self::line(get_string('managecategories', 'core'), '/course/management.php', $groupcourses);
         // SYSCONTEXTID (defined by lib/setup.php on every request) is always the system context's id -
         // core itself relies on this being a stable, well-known value (e.g. lib/accesslib.php), so baking
         // it into a static default is safe, unlike e.g. a category id which varies per instance.
-        $lines[] = self::line(get_string('restorecourse', 'admin'), '/backup/restorefile.php?contextid=' . SYSCONTEXTID,
-            get_string('navgroup_courses', 'local_admindashboard'));
+        $lines[] = self::line(
+            get_string('restorecourse', 'admin'),
+            '/backup/restorefile.php?contextid=' . SYSCONTEXTID,
+            $groupcourses
+        );
 
-        $lines[] = self::line(get_string('customreports', 'core_reportbuilder'), '/reportbuilder/index.php',
-            get_string('navgroup_reports', 'local_admindashboard'));
-        $lines[] = self::line(get_string('logs', 'core'), '/report/log/index.php',
-            get_string('navgroup_reports', 'local_admindashboard'));
-        $lines[] = self::line(get_string('pluginname', 'report_configlog'), '/report/configlog/index.php',
-            get_string('navgroup_reports', 'local_admindashboard'));
+        $lines[] = self::line(get_string('customreports', 'core_reportbuilder'), '/reportbuilder/index.php', $groupreports);
+        $lines[] = self::line(get_string('logs', 'core'), '/report/log/index.php', $groupreports);
+        $lines[] = self::line(get_string('pluginname', 'report_configlog'), '/report/configlog/index.php', $groupreports);
 
-        $lines[] = self::line(get_string('scheduledtasks', 'tool_task'), '/admin/tool/task/scheduledtasks.php',
-            get_string('navgroup_system', 'local_admindashboard'));
+        $lines[] = self::line(get_string('scheduledtasks', 'tool_task'), '/admin/tool/task/scheduledtasks.php', $groupsystem);
 
         if ($pluginman->get_plugin_info('theme_boost_union')) {
-            $lines[] = self::line(get_string('boostunionsettings', 'local_admindashboard'),
-                '/theme/boost_union/settings_overview.php', get_string('navgroup_theme', 'local_admindashboard'));
+            $lines[] = self::line(
+                get_string('boostunionsettings', 'local_admindashboard'),
+                '/theme/boost_union/settings_overview.php',
+                get_string('navgroup_theme', 'local_admindashboard')
+            );
         }
 
         return implode("\n", $lines);
