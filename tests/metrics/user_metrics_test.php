@@ -47,7 +47,7 @@ final class user_metrics_test extends \advanced_testcase {
      * @return void
      */
     private function purge_cache(): void {
-        \cache::make('local_admindashboard', 'dashboarddata')->purge();
+        \core_cache\cache::make('local_admindashboard', 'dashboarddata')->purge();
     }
 
     /**

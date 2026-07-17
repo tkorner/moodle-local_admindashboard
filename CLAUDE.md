@@ -56,7 +56,7 @@ Folgende Dinge dürfen nicht aus Trainingsdaten/Vermutung implementiert werden, 
 
 ## Testing-Strategie
 
-Kein lokales GUI, PHPUnit lokal nicht installierbar. Deshalb zwei Ebenen:
+Kein lokales GUI. Drei Ebenen (Stand Code-Review 2026-07-16 – entgegen der langjährigen Annahme in diesem Dokument ist PHPUnit auf der laufenden Docker-Instanz tatsächlich installiert und lauffähig, siehe Punkt 2):
 
 1. **CLI-Smoke-Skripte** (`cli/verify_*.php`) – sofortiges Feedback während der Session, direkt gegen die echten Daten der laufenden Docker-Instanz, ohne Testframework:
    ```bash
@@ -64,9 +64,19 @@ Kein lokales GUI, PHPUnit lokal nicht installierbar. Deshalb zwei Ebenen:
    ```
    Kein Ersatz für echte Tests, nur Sichtprüfung während der Entwicklung.
 
-2. **GitHub Actions mit `moodlehq/moodle-plugin-ci`** – führt bei jedem Push/PR die eigentliche Absicherung durch: PHPUnit, Behat, phpcs (moodle-Ruleset), phplint, mustache-Lint etc. PHPUnit-Testdateien werden trotzdem geschrieben (siehe Prompt-Dokument Schritt 1/3/4) – sie laufen nur nicht lokal, sondern über CI. Ergebnis im GitHub-Actions-Tab prüfen, nicht lokal erwarten.
+2. **PHPUnit direkt im Container** – lauffähig, `vendor/bin/phpunit` existiert:
+   ```bash
+   docker exec -it claude-moodle-1 sh -c "cd /var/www/html && vendor/bin/phpunit --configuration phpunit.xml --testsuite local_admindashboard_testsuite"
+   ```
+   Sofortiges, vollständiges Testfeedback ohne auf CI zu warten – neue `*_test.php`-Dateien unter `tests/` werden automatisch erkannt (die registrierte Testsuite scannt per Datei-Suffix), kein `--buildconfig` nötig; nur bei einer komplett neuen Testsuite/Plugin-Komponente wäre das erforderlich. Nach jeder Änderung an `version.php` (z.B. Versionsbump) meldet PHPUnit "was initialised for different version" und muss einmalig neu initialisiert werden:
 
-**Fortschritt:** Schritt 0 bis 11 sind umgesetzt und released (siehe Release 1.0.0/1.1.0-Commits); Schritt 12 (dieser Review-/Abschluss-Schritt) läuft gerade.
+   ```bash
+   docker exec -it claude-moodle-1 sh -c "cd /var/www/html && php public/admin/tool/phpunit/cli/init.php"
+   ```
+
+3. **GitHub Actions mit `moodlehq/moodle-plugin-ci`** – zusätzliche Absicherung bei jedem Push/PR (unabhängige Umgebung/Matrix: PHP 8.3/8.4 × Moodle 5.1/5.2, MariaDB): PHPUnit, Behat, phpcs (moodle-Ruleset), phplint, mustache-Lint etc. Ergebnis im GitHub-Actions-Tab prüfen, auch wenn Punkt 2 bereits lokal grün war – andere PHP-/Moodle-Versionen und DB-Engine können abweichen.
+
+**Fortschritt:** Schritt 0 bis 12 sind umgesetzt und released (siehe Release 1.0.0/1.1.0-Commits); ein Code-Review-Nacharbeitungs-Durchgang (2026-07-16) läuft gerade.
 
 ---
 

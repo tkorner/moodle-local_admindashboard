@@ -89,7 +89,7 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      * @return string
      */
     private function grouping_label(): string {
-        return (string) get_config('local_admindashboard', 'groupinglabel') ?: 'Schule';
+        return (string) get_config('local_admindashboard', 'groupinglabel') ?: school_matcher::DEFAULT_GROUPING_LABEL;
     }
 
     /**
@@ -162,6 +162,15 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      * shown here (e.g. someone deletes the cohort) - stale codes are
      * silently skipped rather than shown broken; the settings page's
      * one-sided-match warning is where that gets surfaced.
+     *
+     * Known edge case, not fixed: admin_setting_configmultiselect stores its
+     * selection as a plain comma-joined string (verified in
+     * lib/adminlib.php - get_setting()/write_setting() do a bare
+     * explode(',')/implode(',') with no escaping), so an idnumber that
+     * itself contains a comma would corrupt this list. idnumbers containing
+     * commas are unusual enough, and changing the storage format invasive
+     * enough, that this is left as a documented limitation rather than
+     * fixed.
      *
      * @return array of stdClass (idnumber, cohortid, cohortname, categoryid,
      *         categoryname), keyed by idnumber
@@ -400,10 +409,16 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      * Decides the cron tile's severity.
      *
      * Own heuristic (not a reuse of \tool_task\check\cronrunning's verdict,
-     * which is a separate report page one click away): any recent failure
-     * is an error; cron never having run, or being overdue by more than
-     * $CFG->expectedcronfrequency (the same config core's own check reads),
-     * is a warning.
+     * which is a separate report page one click away), but aligned with it
+     * on one point: any recent failure, or cron never having run even once,
+     * is an error - cronrunning's own get_result() computes its delta as
+     * time() - get_config('tool_task', 'lastcronstart'), and an unset config
+     * (never run) makes that delta huge enough to always exceed its own
+     * DAYSECS threshold, i.e. core's most severe (CRITICAL) state. Merely
+     * being overdue by more than $CFG->expectedcronfrequency (the same
+     * config core's own check reads) having run before is a lower-severity
+     * warning - a transient blip is not the same problem as cron.php never
+     * having been set up at all.
      *
      * @param \stdClass $cron as returned by health_signals::cron_status()
      * @return string 'ok', 'warning', or 'error'
@@ -411,12 +426,12 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
     private function cron_severity(\stdClass $cron): string {
         global $CFG;
 
-        if ($cron->failedtasks24h > 0) {
+        if ($cron->failedtasks24h > 0 || $cron->lastrunat === 0) {
             return 'error';
         }
 
         $expectedfrequency = $CFG->expectedcronfrequency ?? MINSECS;
-        if ($cron->lastrunat === 0 || (time() - $cron->lastrunat) > $expectedfrequency + MINSECS) {
+        if ((time() - $cron->lastrunat) > $expectedfrequency + MINSECS) {
             return 'warning';
         }
 

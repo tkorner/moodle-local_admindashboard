@@ -30,7 +30,10 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
     'local/admindashboard:view' => [
-        'riskbitmask'  => 0,
+        // RISK_PERSONAL: duplicateemails.php exposes every duplicated account's name and email address,
+        // so an admin assigning this capability to a custom role should see the personal-data risk flag,
+        // same as core does for capabilities exposing similar user lists (e.g. moodle/user:viewalldetails).
+        'riskbitmask'  => RISK_PERSONAL,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes'   => [

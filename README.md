@@ -115,21 +115,26 @@ GitHub Actions across PHP 8.3/8.4 × Moodle 5.1/5.2 on MariaDB: PHP lint,
 Moodle coding style (moodle-cs), PHPDoc checker, upgrade savepoints,
 Mustache lint, PHPUnit, and Behat.
 
-For fast local feedback without waiting on CI, `cli/verify_*.php` scripts
-check each metrics/matching class against the real data of a running
-instance:
+For fast local feedback without waiting on CI, the PHPUnit suite itself can
+be run directly against the running container (a PHPUnit test environment
+turned out to already be installed there, contrary to this project's
+earlier assumption throughout development that only CI could run it):
+
+```bash
+docker exec -it claude-moodle-1 sh -c "cd /var/www/html && vendor/bin/phpunit --configuration phpunit.xml --testsuite local_admindashboard_testsuite"
+```
+
+`cli/verify_*.php` scripts remain for eyeballing each metrics/matching
+class against the real data of a running instance - a sanity check, not a
+substitute for the tests above:
 
 ```bash
 docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_school_matcher.php
 docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_user_metrics.php
 docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_school_metrics.php
 docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_health_signals.php
-docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_emptystate.php
 docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_navitems.php
 ```
-
-These are a sanity check, not a substitute for the PHPUnit suite under
-`tests/`, which runs via CI.
 
 ## Development
 

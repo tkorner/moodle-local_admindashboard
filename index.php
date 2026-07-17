@@ -31,9 +31,12 @@ use local_admindashboard\output\dashboard_page;
 admin_externalpage_setup('local_admindashboard');
 
 // The dropdown only ever offers these four values (matches the settings page); an untrusted GET
-// value outside this list is ignored, falling back to the configured default.
+// value outside this list is ignored, falling back to the configured default. The "?: 180" guards
+// against 'timerangedays' never having been saved (get_config() === false, e.g. right after install
+// on a site that never visited the settings page) - without it, (int) false is 0, which isn't in
+// $allowedtimeranges either, so the allowlist check below would "fall back" to that same broken 0.
 $allowedtimeranges = [30, 90, 180, 360];
-$defaulttimerangedays = (int) get_config('local_admindashboard', 'timerangedays');
+$defaulttimerangedays = (int) (get_config('local_admindashboard', 'timerangedays') ?: 180);
 $timerangedays = optional_param('timerangedays', $defaulttimerangedays, PARAM_INT);
 if (!in_array($timerangedays, $allowedtimeranges, true)) {
     $timerangedays = $defaulttimerangedays;
@@ -44,7 +47,7 @@ if (!in_array($timerangedays, $allowedtimeranges, true)) {
 // action anyone who can already see the dashboard should reasonably be able to trigger.
 if (optional_param('purgecache', 0, PARAM_BOOL)) {
     require_sesskey();
-    \cache::make('local_admindashboard', 'dashboarddata')->purge();
+    \core_cache\cache::make('local_admindashboard', 'dashboarddata')->purge();
     redirect(
         new \core\url('/local/admindashboard/index.php', ['timerangedays' => $timerangedays]),
         get_string('cachepurged', 'local_admindashboard'),
@@ -56,7 +59,10 @@ if (optional_param('purgecache', 0, PARAM_BOOL)) {
 // Fired here, not right after admin_externalpage_setup() above, so a purge-cache request
 // (which redirects away without ever rendering the dashboard) doesn't log a spurious "viewed"
 // event - the capability check already happened via admin_externalpage_setup().
-dashboard_viewed::create(['context' => \core\context\system::instance()])->trigger();
+dashboard_viewed::create([
+    'context' => \core\context\system::instance(),
+    'other' => ['page' => 'index.php'],
+])->trigger();
 
 $page = new dashboard_page($timerangedays);
 $renderer = $PAGE->get_renderer('local_admindashboard');

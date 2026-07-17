@@ -29,6 +29,7 @@
 
 require(__DIR__ . '/../../config.php');
 
+use local_admindashboard\event\dashboard_viewed;
 use local_admindashboard\metrics\health_signals;
 
 require_login();
@@ -40,6 +41,11 @@ $PAGE->set_context($context);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('duplicateemails', 'local_admindashboard'));
 $PAGE->set_heading(get_string('pluginname', 'local_admindashboard'));
+
+dashboard_viewed::create([
+    'context' => $context,
+    'other' => ['page' => 'duplicateemails.php'],
+])->trigger();
 
 $signal = health_signals::duplicate_emails();
 
@@ -61,13 +67,20 @@ echo $OUTPUT->notification($mergeusershint, 'info');
 if (empty($signal->details)) {
     echo $OUTPUT->notification(get_string('duplicateemails_none', 'local_admindashboard'), 'success');
 } else {
+    if ($signal->detailsgrouptruncated) {
+        echo $OUTPUT->notification(
+            get_string('duplicateemails_truncated', 'local_admindashboard', $signal->count),
+            'info'
+        );
+    }
+
     $table = new \core_table\output\html_table();
     $table->head = [get_string('fullnameuser', 'core'), get_string('email', 'core')];
     foreach ($signal->details as $row) {
         $profileurl = new \core\url('/user/profile.php', ['id' => $row->userid]);
         $table->data[] = [
-            \core\output\html_writer::link($profileurl, $row->fullname),
-            $row->email,
+            \core\output\html_writer::link($profileurl, s($row->fullname)),
+            s($row->email),
         ];
     }
     echo \core\output\html_writer::table($table);

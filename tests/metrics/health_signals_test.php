@@ -41,7 +41,7 @@ final class health_signals_test extends \advanced_testcase {
      */
     protected function setUp(): void {
         parent::setUp();
-        \cache::make('local_admindashboard', 'dashboarddata')->purge();
+        \core_cache\cache::make('local_admindashboard', 'dashboarddata')->purge();
     }
 
     /**
@@ -64,12 +64,41 @@ final class health_signals_test extends \advanced_testcase {
 
         $this->assertSame(1, $result->count);
         $this->assertCount(2, $result->details);
+        $this->assertFalse($result->detailsgrouptruncated);
         $ids = array_map(fn($row) => $row->userid, $result->details);
         sort($ids);
         $expected = [$user1->id, $user2->id];
         sort($expected);
         $this->assertSame($expected, $ids);
         $this->assertSame('shared@example.com', $result->details[0]->email);
+        // fullname() must be called with every name field it needs (firstnamephonetic, lastnamephonetic,
+        // middlename, alternatename) or it raises a debugging notice - a real defect this plugin had
+        // before selecting those columns explicitly.
+        $this->assertDebuggingNotCalled();
+    }
+
+    /**
+     * Emails differing only by case are the same mailbox and must be
+     * grouped together, not treated as two distinct addresses.
+     *
+     * @covers \local_admindashboard\metrics\health_signals::duplicate_emails
+     * @return void
+     */
+    public function test_duplicate_emails_matching_is_case_insensitive(): void {
+        $this->resetAfterTest(true);
+
+        $user1 = $this->getDataGenerator()->create_user(['email' => 'Shared@Example.com']);
+        $user2 = $this->getDataGenerator()->create_user(['email' => 'shared@example.com']);
+
+        $result = health_signals::duplicate_emails();
+
+        $this->assertSame(1, $result->count);
+        $this->assertCount(2, $result->details);
+        $ids = array_map(fn($row) => $row->userid, $result->details);
+        sort($ids);
+        $expected = [$user1->id, $user2->id];
+        sort($expected);
+        $this->assertSame($expected, $ids);
     }
 
     /**
@@ -90,7 +119,9 @@ final class health_signals_test extends \advanced_testcase {
 
         $this->assertSame(1, $result->count);
         $this->assertCount(1, $result->details);
+        $this->assertFalse($result->detailstruncated);
         $this->assertSame($openended->id, $result->details[0]->courseid);
+        $this->assertSame($category->id, $result->details[0]->categoryid);
         $this->assertSame('Test Category', $result->details[0]->categoryname);
     }
 

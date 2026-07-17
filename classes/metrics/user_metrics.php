@@ -57,7 +57,7 @@ class user_metrics {
      *         not necessarily this request)
      */
     public static function get_metrics(int $timerangedays): \stdClass {
-        $cache = \cache::make('local_admindashboard', 'dashboarddata');
+        $cache = \core_cache\cache::make('local_admindashboard', 'dashboarddata');
         $cachekey = 'usermetrics_' . $timerangedays;
 
         $cached = $cache->get($cachekey);

@@ -54,7 +54,7 @@ class school_metrics {
      *         when this was last computed, not necessarily this request)
      */
     public static function get_metrics(int $cohortid, int $categoryid, int $timerangedays): \stdClass {
-        $cache = \cache::make('local_admindashboard', 'dashboarddata');
+        $cache = \core_cache\cache::make('local_admindashboard', 'dashboarddata');
         $cachekey = "schoolmetrics_{$cohortid}_{$categoryid}_{$timerangedays}";
 
         $cached = $cache->get($cachekey);

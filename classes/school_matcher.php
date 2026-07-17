@@ -30,6 +30,13 @@ namespace local_admindashboard;
  */
 class school_matcher {
     /**
+     * Default value of the 'groupinglabel' setting (Schritt 9) - what to call a "school" in the
+     * dashboard UI before an admin customises it. Kept here rather than duplicated as a literal in
+     * both settings.php and dashboard_page.php, which used to be able to drift independently.
+     */
+    public const DEFAULT_GROUPING_LABEL = 'Schule';
+
+    /**
      * Matches system-wide cohorts against top-level course categories by idnumber.
      *
      * @return \stdClass with three properties, each an array of stdClass rows:

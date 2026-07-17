@@ -60,10 +60,11 @@ if ($hassiteconfig) {
             'local_admindashboard/groupinglabel',
             get_string('groupinglabel', 'local_admindashboard'),
             get_string('groupinglabel_desc', 'local_admindashboard'),
-            'Schule',
+            \local_admindashboard\school_matcher::DEFAULT_GROUPING_LABEL,
             PARAM_TEXT
         ));
-        $grouping = (string) get_config('local_admindashboard', 'groupinglabel') ?: 'Schule';
+        $grouping = (string) get_config('local_admindashboard', 'groupinglabel')
+            ?: \local_admindashboard\school_matcher::DEFAULT_GROUPING_LABEL;
 
         $settings->add(new admin_setting_configselect(
             'local_admindashboard/timerangedays',
@@ -141,6 +142,12 @@ if ($hassiteconfig) {
             ));
         }
 
+        // navitems_parser::default_value() builds its labels via get_string() in whatever language is
+        // active for this request. That's only ever "live" (reflecting the current admin's language)
+        // until the very first time this textarea is actually saved - saving freezes it as plain text
+        // in whichever language rendered the form at that moment, exactly like $CFG->custommenuitems
+        // itself. Documented here rather than fixed: matching core's own custommenuitems convention is
+        // more consistent than inventing a per-request re-localisation scheme for one setting.
         $settings->add(new admin_setting_configtextarea(
             'local_admindashboard/navitems',
             get_string('navitems', 'local_admindashboard'),

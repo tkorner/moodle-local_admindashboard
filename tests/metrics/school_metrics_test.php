@@ -40,7 +40,7 @@ final class school_metrics_test extends \advanced_testcase {
      */
     protected function setUp(): void {
         parent::setUp();
-        \cache::make('local_admindashboard', 'dashboarddata')->purge();
+        \core_cache\cache::make('local_admindashboard', 'dashboarddata')->purge();
     }
 
     /**

@@ -21,6 +21,12 @@
  * situation: a report page being viewed, with no associated database
  * record) - crud 'r', edulevel 'other', no objecttable/objectid at all.
  *
+ * Shared by the main dashboard and its two drill-down pages rather than
+ * having three near-identical event classes - which specific page is
+ * recorded via the 'page' key in 'other' (defaulting to index.php, so
+ * existing call sites that never set it keep working), used by
+ * get_description() and get_url() below.
+ *
  * @package   local_admindashboard
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,7 +35,8 @@
 namespace local_admindashboard\event;
 
 /**
- * Event triggered when the admin dashboard page is viewed.
+ * Event triggered when the admin dashboard page, or one of its drill-down
+ * pages, is viewed.
  */
 class dashboard_viewed extends \core\event\base {
     /**
@@ -57,7 +64,8 @@ class dashboard_viewed extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' viewed the admin dashboard.";
+        $page = $this->other['page'] ?? 'index.php';
+        return "The user with id '$this->userid' viewed the admin dashboard page '$page'.";
     }
 
     /**
@@ -66,6 +74,7 @@ class dashboard_viewed extends \core\event\base {
      * @return \core\url
      */
     public function get_url() {
-        return new \core\url('/local/admindashboard/index.php');
+        $page = $this->other['page'] ?? 'index.php';
+        return new \core\url('/local/admindashboard/' . $page);
     }
 }

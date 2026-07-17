@@ -45,19 +45,36 @@ namespace local_admindashboard\metrics;
  * Data hygiene and infrastructure health signals for the admin dashboard.
  */
 class health_signals {
+    /** @var int Hard cap on courses_without_enddate()'s drill-down rows - enddate=0 is Moodle's own
+     *  course default, so on a site that never adopted end dates this signal could otherwise match
+     *  every course; count stays exact, only the detail list (and its cached HTML rendering cost) is
+     *  capped. See details_truncated on the returned object.
+     */
+    private const COURSESWITHOUTENDDATE_MAXDETAILS = 500;
+
+    /** @var int Hard cap on the number of distinct duplicate-email groups whose member rows get
+     *  fetched for duplicate_emails()'s drill-down - keeps the get_in_or_equal() list (and thus the
+     *  number of bound query parameters) bounded even on a site with an unusually large number of
+     *  duplicate groups. The group count itself stays exact.
+     */
+    private const DUPLICATEEMAILS_MAXGROUPS = 500;
+
     /**
      * Finds email addresses shared by more than one non-deleted, locally
      * managed, non-guest user account.
      *
      * "Aktives Nutzerkonto" here uses the same convention as user_metrics:
      * not deleted, not guest, not a remote MNet account - see that class's
-     * docblock for the rationale.
+     * docblock for the rationale. Matching is case-insensitive (Foo@x.ch and
+     * foo@x.ch are the same mailbox, which is exactly what this signal exists
+     * to catch before a merge-users pass).
      *
-     * @return \stdClass with count (number of duplicated email addresses),
-     *         details (array of stdClass: userid, email, fullname - one row
-     *         per affected user, for the drill-down list), and computedat
-     *         (unix timestamp of when this was last computed, not
-     *         necessarily this request - see db/caches.php, 1 day TTL)
+     * @return \stdClass with count (number of duplicated email addresses,
+     *         exact), details (array of stdClass: userid, email, fullname -
+     *         one row per affected user, for the drill-down list, capped at
+     *         DUPLICATEEMAILS_MAXGROUPS groups), detailsgrouptruncated (bool),
+     *         and computedat (unix timestamp of when this was last computed,
+     *         not necessarily this request - see db/caches.php, 1 day TTL)
      */
     public static function duplicate_emails(): \stdClass {
         return self::from_cache('duplicateemails', [self::class, 'compute_duplicate_emails']);
@@ -66,34 +83,44 @@ class health_signals {
     /**
      * Computes the duplicate_emails() signal.
      *
-     * @return \stdClass with count and details
+     * @return \stdClass with count, details, and detailsgrouptruncated
      */
     private static function compute_duplicate_emails(): \stdClass {
         global $DB, $CFG;
 
-        $sql = "SELECT email, COUNT(*) AS usercount
+        // Plain LOWER() rather than a $DB->sql_*() wrapper - verified there is no such wrapper in core's
+        // moodle_database API, and core's own authenticate_user_login() (lib/moodlelib.php) uses this
+        // exact "LOWER(email) = LOWER(:email)" idiom directly for the same case-insensitive email
+        // matching problem, so it's portable across the DB drivers Moodle supports.
+        $emaillower = 'LOWER(email)';
+        $sql = "SELECT {$emaillower} AS emaillower, COUNT(*) AS usercount
                   FROM {user}
                  WHERE deleted = 0
                    AND id != :guestid
                    AND mnethostid = :mnethostid
                    AND email != ''
-              GROUP BY email
+              GROUP BY {$emaillower}
                 HAVING COUNT(*) > 1";
         $params = ['guestid' => $CFG->siteguest, 'mnethostid' => $CFG->mnet_localhost_id];
         $duplicategroups = $DB->get_records_sql($sql, $params);
 
         $result = new \stdClass();
         $result->details = [];
+        $result->count = count($duplicategroups);
 
-        if (!empty($duplicategroups)) {
-            [$emailsql, $emailparams] = $DB->get_in_or_equal(array_keys($duplicategroups), SQL_PARAMS_NAMED, 'email');
-            $sql = "SELECT id, email, firstname, lastname
+        $groupstoshow = array_slice(array_keys($duplicategroups), 0, self::DUPLICATEEMAILS_MAXGROUPS);
+        $result->detailsgrouptruncated = count($duplicategroups) > count($groupstoshow);
+
+        if (!empty($groupstoshow)) {
+            $namefields = implode(', ', \core_user\fields::get_name_fields());
+            [$emailsql, $emailparams] = $DB->get_in_or_equal($groupstoshow, SQL_PARAMS_NAMED, 'email');
+            $sql = "SELECT id, email, {$namefields}
                       FROM {user}
                      WHERE deleted = 0
                        AND id != :guestid
                        AND mnethostid = :mnethostid
-                       AND email $emailsql
-                  ORDER BY email, id";
+                       AND {$emaillower} {$emailsql}
+                  ORDER BY {$emaillower}, id";
             $params = array_merge(
                 ['guestid' => $CFG->siteguest, 'mnethostid' => $CFG->mnet_localhost_id],
                 $emailparams
@@ -108,8 +135,6 @@ class health_signals {
             }
         }
 
-        $result->count = count($duplicategroups);
-
         return $result;
     }
 
@@ -121,9 +146,11 @@ class health_signals {
      * not an oversight: the front page is not a "course without an enddate"
      * in any actionable sense for this signal.
      *
-     * @return \stdClass with count, details (array of stdClass: courseid,
-     *         fullname, categoryname), and computedat (see db/caches.php,
-     *         1 day TTL)
+     * @return \stdClass with count (exact, uncapped), details (array of
+     *         stdClass: courseid, fullname, categoryid, categoryname -
+     *         capped at COURSESWITHOUTENDDATE_MAXDETAILS rows), detailstruncated
+     *         (bool - whether count exceeds the number of detail rows returned),
+     *         and computedat (see db/caches.php, 1 day TTL)
      */
     public static function courses_without_enddate(): \stdClass {
         return self::from_cache('courseswithoutenddate', [self::class, 'compute_courses_without_enddate']);
@@ -132,17 +159,24 @@ class health_signals {
     /**
      * Computes the courses_without_enddate() signal.
      *
-     * @return \stdClass with count and details
+     * @return \stdClass with count, details, and detailstruncated
      */
     private static function compute_courses_without_enddate(): \stdClass {
         global $DB;
 
-        $sql = "SELECT c.id, c.fullname, cc.name AS categoryname
-                  FROM {course} c
-                  JOIN {course_categories} cc ON cc.id = c.category
-                 WHERE c.enddate = 0
-              ORDER BY c.fullname";
-        $courses = $DB->get_records_sql($sql);
+        $fromwhere = "FROM {course} c
+                       JOIN {course_categories} cc ON cc.id = c.category
+                      WHERE c.enddate = 0";
+
+        $count = $DB->count_records_sql("SELECT COUNT(*) {$fromwhere}");
+
+        $courses = $DB->get_records_sql(
+            "SELECT c.id, c.fullname, cc.id AS categoryid, cc.name AS categoryname {$fromwhere}
+              ORDER BY c.fullname",
+            null,
+            0,
+            self::COURSESWITHOUTENDDATE_MAXDETAILS
+        );
 
         $result = new \stdClass();
         $result->details = [];
@@ -150,10 +184,12 @@ class health_signals {
             $result->details[] = (object) [
                 'courseid' => $course->id,
                 'fullname' => $course->fullname,
+                'categoryid' => $course->categoryid,
                 'categoryname' => $course->categoryname,
             ];
         }
-        $result->count = count($result->details);
+        $result->count = $count;
+        $result->detailstruncated = $count > count($result->details);
 
         return $result;
     }
@@ -261,7 +297,7 @@ class health_signals {
      *         computedat set
      */
     private static function from_cache(string $cachekey, callable $computer): \stdClass {
-        $cache = \cache::make('local_admindashboard', 'dashboarddata');
+        $cache = \core_cache\cache::make('local_admindashboard', 'dashboarddata');
 
         $cached = $cache->get($cachekey);
         if ($cached !== false) {

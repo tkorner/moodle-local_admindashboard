@@ -44,9 +44,10 @@ class navitems_parser {
      * Lines that are blank (after trimming) are silently skipped - this
      * lets an admin use blank lines to visually separate groups in the
      * textarea. Lines that are not blank but do not have 3 or 4 non-empty
-     * Title/URL/Group segments, or whose URL cannot be parsed at all, are
-     * skipped and counted in errorlines so the settings page can warn about
-     * them.
+     * Title/URL/Group segments, whose URL cannot be parsed at all, whose URL
+     * is not http(s) (blocks e.g. a pasted 'javascript:' link), or whose
+     * capability does not exist, are skipped and counted in errorlines so
+     * the settings page can warn about them.
      *
      * @param string $rawtext the raw setting value
      * @return \stdClass groups (array of stdClass: title, items - array of
@@ -78,6 +79,26 @@ class navitems_parser {
             try {
                 $url = (new \core\url($rawurl))->out(false);
             } catch (\core\exception\moodle_exception $e) {
+                $errorlines++;
+                continue;
+            }
+
+            // Only http(s) links are renderable as a safe <a href>. \core\url happily parses (and
+            // normalises rather than rejects) other schemes - verified directly: 'javascript:alert(1)'
+            // becomes 'javascript://alert(1)', which a browser will happily execute on click. Anyone
+            // setting this already needs moodle/site:config, so this is defense-in-depth, not the
+            // primary control.
+            $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+            if (!in_array($scheme, ['http', 'https'], true)) {
+                $errorlines++;
+                continue;
+            }
+
+            // An unknown capability would otherwise silently hide the link forever (has_capability()
+            // returns false for it) while also spamming a debugging() notice on every dashboard view -
+            // catching it here instead gives the admin the same "N lines could not be parsed" warning
+            // a bad URL already produces, right where they can fix it.
+            if ($capability !== '' && !get_capability_info($capability)) {
                 $errorlines++;
                 continue;
             }

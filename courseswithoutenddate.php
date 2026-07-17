@@ -24,6 +24,7 @@
 
 require(__DIR__ . '/../../config.php');
 
+use local_admindashboard\event\dashboard_viewed;
 use local_admindashboard\metrics\health_signals;
 
 require_login();
@@ -36,6 +37,11 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('courseswithoutenddate', 'local_admindashboard'));
 $PAGE->set_heading(get_string('pluginname', 'local_admindashboard'));
 
+dashboard_viewed::create([
+    'context' => $context,
+    'other' => ['page' => 'courseswithoutenddate.php'],
+])->trigger();
+
 $signal = health_signals::courses_without_enddate();
 
 echo $OUTPUT->header();
@@ -44,13 +50,22 @@ echo $OUTPUT->heading(get_string('courseswithoutenddate', 'local_admindashboard'
 if (empty($signal->details)) {
     echo $OUTPUT->notification(get_string('courseswithoutenddate_none', 'local_admindashboard'), 'success');
 } else {
+    if ($signal->detailstruncated) {
+        echo $OUTPUT->notification(
+            get_string('courseswithoutenddate_truncated', 'local_admindashboard', $signal->count),
+            'info'
+        );
+    }
+
     $table = new \core_table\output\html_table();
     $table->head = [get_string('course', 'core'), get_string('category', 'core')];
     foreach ($signal->details as $row) {
         $editurl = new \core\url('/course/edit.php', ['id' => $row->courseid]);
+        $coursecontext = \core\context\course::instance($row->courseid);
+        $categorycontext = \core\context\coursecat::instance($row->categoryid);
         $table->data[] = [
-            \core\output\html_writer::link($editurl, $row->fullname),
-            $row->categoryname,
+            \core\output\html_writer::link($editurl, format_string($row->fullname, true, ['context' => $coursecontext])),
+            format_string($row->categoryname, true, ['context' => $categorycontext]),
         ];
     }
     echo \core\output\html_writer::table($table);
