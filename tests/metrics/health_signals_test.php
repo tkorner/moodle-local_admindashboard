@@ -71,8 +71,8 @@ final class health_signals_test extends \advanced_testcase {
         sort($expected);
         $this->assertSame($expected, $ids);
         $this->assertSame('shared@example.com', $result->details[0]->email);
-        // fullname() must be called with every name field it needs (firstnamephonetic, lastnamephonetic,
-        // middlename, alternatename) or it raises a debugging notice - a real defect this plugin had
+        // Calling fullname() without every name field it needs (firstnamephonetic, lastnamephonetic,
+        // middlename, alternatename) raises a debugging notice - a real defect this plugin had
         // before selecting those columns explicitly.
         $this->assertDebuggingNotCalled();
     }

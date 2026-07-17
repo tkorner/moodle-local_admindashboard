@@ -142,8 +142,8 @@ if ($hassiteconfig) {
             ));
         }
 
-        // navitems_parser::default_value() builds its labels via get_string() in whatever language is
-        // active for this request. That's only ever "live" (reflecting the current admin's language)
+        // The navitems_parser::default_value() call below builds its labels via get_string() in
+        // whatever language is active for this request. That's only "live" (reflecting the admin's language)
         // until the very first time this textarea is actually saved - saving freezes it as plain text
         // in whichever language rendered the form at that moment, exactly like $CFG->custommenuitems
         // itself. Documented here rather than fixed: matching core's own custommenuitems convention is

@@ -35,6 +35,8 @@ namespace local_admindashboard\output;
  */
 final class dashboard_page_test extends \advanced_testcase {
     /**
+     * Returns the plugin's own renderer.
+     *
      * @return \core\output\renderer_base
      */
     private function renderer(): \core\output\renderer_base {
