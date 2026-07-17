@@ -145,6 +145,11 @@ actual Moodle core source rather than assumed, and most steps were also
 live-tested end-to-end against a running Moodle instance (real HTTP
 sessions, real data) before being committed.
 
+## Credits
+
+Code review by David Pesce - the security fixes, hardening, and test
+coverage additions in this version were driven by his review.
+
 ## License
 
 GPL v3 or later - see [`LICENSE`](LICENSE).
