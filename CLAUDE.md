@@ -74,9 +74,9 @@ Kein lokales GUI. Drei Ebenen (Stand Code-Review 2026-07-16 – entgegen der lan
    docker exec -it claude-moodle-1 sh -c "cd /var/www/html && php public/admin/tool/phpunit/cli/init.php"
    ```
 
-3. **GitHub Actions mit `moodlehq/moodle-plugin-ci`** – zusätzliche Absicherung bei jedem Push/PR (unabhängige Umgebung/Matrix: PHP 8.3/8.4 × Moodle 5.1/5.2, MariaDB): PHPUnit, Behat, phpcs (moodle-Ruleset), phplint, mustache-Lint etc. Ergebnis im GitHub-Actions-Tab prüfen, auch wenn Punkt 2 bereits lokal grün war – andere PHP-/Moodle-Versionen und DB-Engine können abweichen.
+3. **GitHub Actions mit `moodlehq/moodle-plugin-ci`** – zusätzliche Absicherung bei jedem Push/PR (unabhängige Umgebung/Matrix: PHP 8.3/8.4 × Moodle 5.1/5.2 × MariaDB/PostgreSQL, seit der Marketplace-Vorbereitung 2026-07-22 auch PostgreSQL, nicht mehr nur MariaDB): PHPUnit, Behat, phpcs (moodle-Ruleset), phplint, mustache-Lint etc. Ergebnis im GitHub-Actions-Tab prüfen, auch wenn Punkt 2 bereits lokal grün war – andere PHP-/Moodle-Versionen und DB-Engine können abweichen.
 
-**Fortschritt:** Schritt 0 bis 12 sind umgesetzt und released (siehe Release 1.0.0/1.1.0-Commits); ein Code-Review-Nacharbeitungs-Durchgang (2026-07-16) läuft gerade.
+**Fortschritt:** Schritt 0 bis 12 sind umgesetzt und released (siehe Release 1.0.0/1.1.0-Commits); der Code-Review-Nacharbeitungs-Durchgang (2026-07-16) ist abgeschlossen und released (1.1.1). Seit 2026-07-22 läuft die Marketplace-Submission-Vorbereitung, siehe neuer Abschnitt "Marketplace-Submission" unten.
 
 ---
 
@@ -102,6 +102,19 @@ Stand Schritt 12:
 Weitere im Verlauf dokumentierte (nicht mehr offene, aber bewusste) Entscheidungen stehen in README.md unter "Known open assumptions", u.a. zur Interpretation der SPEC-Navigationspunkte und zur fehlenden Capability-Einschränkung der Default-Navigationslinks (Schritt 7h).
 
 Diese Liste bei Bedarf ergänzen, wenn im Verlauf der Implementierung neue offene Punkte auftauchen – nicht stillschweigend Annahmen treffen und weitermachen.
+
+---
+
+## Marketplace-Submission
+
+Checkliste liegt ausserhalb dieses Repos (`Marketplace.md` im Claude-Projektverzeichnis, nicht im Plugin-Repo selbst). Stand 2026-07-22:
+
+- **Compliance-Audit durchgeführt:** Lizenz-Header (alle `.php`), GPLv3-`LICENSE`, Privacy-Provider (`null_provider`, da kein eigenes DB-Schema, siehe oben), keine Treffer für `eval()`/`unserialize()`/rohes `$_REQUEST`/`$_GET`/`$_POST`, keine rohe SQL-Konkatenation (`$DB->...` mit Platzhaltern durchgängig), Settings ausschliesslich über `get_config('local_admindashboard', ...)`/`config_plugins`, kein `composer.json` nötig, öffentlicher GitHub-Issue-Tracker vorhanden (Repo `tkorner/moodle-local_admindashboard`, öffentlich, Issues aktiviert) – alles ✅, keine Fixes nötig.
+- **CI-Matrix erweitert:** vorher nur MariaDB, jetzt zusätzlich PostgreSQL (Guideline verlangt beide Cross-DB-Engines) – siehe `.github/workflows/ci.yml`.
+- **Reifegrad angehoben:** `version.php` von `MATURITY_RC`/`1.1.1` auf `MATURITY_STABLE`/`1.2.0` für die Submission.
+- **Bewusste Abweichung dokumentiert:** `lang/de/` wird schon vor offizieller AMOS-Freigabe mitgeliefert – siehe README.md "Known open assumptions", letzter Punkt.
+- **Nicht automatisiert (bewusst, siehe Rückfrage 2026-07-22):** Screenshots (Dashboard + Settings) macht der Nutzer selbst per Browser-Login; das tatsächliche Release-Zip auf einer frischen Instanz testen (Checklisten-Punkt 8 – der `admin_externalpage_setup()`-Fehlerklasse) bleibt ebenfalls manuelle Aufgabe vor dem nächsten Tag.
+- **Git-Tag + GitHub-Release + tatsächliche Einreichung bei marketplace.moodle.com:** explizit erst nach erneuter Rücksprache, nicht automatisch am Ende dieser Session.
 
 ---
 

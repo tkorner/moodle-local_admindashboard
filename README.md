@@ -77,6 +77,15 @@ documented at the point of decision in the relevant class's docblock:
   pre-Schritt-7h behaviour of showing all of them to anyone who can already
   see the dashboard; an admin can add one per link via the optional 4th
   `|`-separated segment (`classes/navitems_parser.php`).
+- `lang/de/` ships in this repo from the start rather than being added later
+  through AMOS. The Moodle Plugin Directory guidelines expect only
+  `lang/en/` at submission time, with any other language following through
+  AMOS after approval - this plugin has carried a German UI from early on
+  and keeping the two language packs in sync (see CLAUDE.md, "Coding
+  standards") caught several missing/inconsistent strings during
+  development. This is a deliberate, documented deviation, not an
+  oversight; nothing prevents the German strings from also going through
+  AMOS once the plugin is approved.
 
 ## Capability
 
