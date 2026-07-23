@@ -17,12 +17,12 @@
 /**
  * Tests for school_matcher.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard;
+namespace local_admincockpit;
 
 /**
  * Class school_matcher_test
@@ -32,7 +32,7 @@ final class school_matcher_test extends \advanced_testcase {
      * A cohort and a top-level category sharing the same idnumber are a
      * "matched" pair, and neither shows up in the one-sided lists.
      *
-     * @covers \local_admindashboard\school_matcher::get_matches
+     * @covers \local_admincockpit\school_matcher::get_matches
      * @return void
      */
     public function test_full_pair_is_matched(): void {
@@ -55,7 +55,7 @@ final class school_matcher_test extends \advanced_testcase {
     /**
      * A cohort without a matching top-level category ends up in cohortonly.
      *
-     * @covers \local_admindashboard\school_matcher::get_matches
+     * @covers \local_admincockpit\school_matcher::get_matches
      * @return void
      */
     public function test_cohort_without_category_is_cohort_only(): void {
@@ -74,7 +74,7 @@ final class school_matcher_test extends \advanced_testcase {
     /**
      * A top-level category without a matching cohort ends up in categoryonly.
      *
-     * @covers \local_admindashboard\school_matcher::get_matches
+     * @covers \local_admincockpit\school_matcher::get_matches
      * @return void
      */
     public function test_category_without_cohort_is_category_only(): void {
@@ -94,7 +94,7 @@ final class school_matcher_test extends \advanced_testcase {
      * A cohort and a category with an empty idnumber are ignored entirely,
      * even though nothing stops them from otherwise coexisting.
      *
-     * @covers \local_admindashboard\school_matcher::get_matches
+     * @covers \local_admincockpit\school_matcher::get_matches
      * @return void
      */
     public function test_empty_idnumber_is_ignored(): void {
@@ -114,7 +114,7 @@ final class school_matcher_test extends \advanced_testcase {
      * A category-context cohort (not system-wide) must not be treated as a
      * school candidate, even if its idnumber matches a top-level category.
      *
-     * @covers \local_admindashboard\school_matcher::get_matches
+     * @covers \local_admincockpit\school_matcher::get_matches
      * @return void
      */
     public function test_non_system_cohort_is_ignored(): void {

@@ -17,12 +17,12 @@
 /**
  * Tests for school_metrics.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\metrics;
+namespace local_admincockpit\metrics;
 
 /**
  * Class school_metrics_test
@@ -40,14 +40,14 @@ final class school_metrics_test extends \advanced_testcase {
      */
     protected function setUp(): void {
         parent::setUp();
-        \core_cache\cache::make('local_admindashboard', 'dashboarddata')->purge();
+        \core_cache\cache::make('local_admincockpit', 'dashboarddata')->purge();
     }
 
     /**
      * membercount includes every member regardless of when they were added;
      * newmembers only counts those added within the configured time range.
      *
-     * @covers \local_admindashboard\metrics\school_metrics::get_metrics
+     * @covers \local_admincockpit\metrics\school_metrics::get_metrics
      * @return void
      */
     public function test_member_counts_and_new_members(): void {
@@ -81,7 +81,7 @@ final class school_metrics_test extends \advanced_testcase {
      * Only members whose user account has lastaccess within the last 4
      * weeks count as active.
      *
-     * @covers \local_admindashboard\metrics\school_metrics::get_metrics
+     * @covers \local_admincockpit\metrics\school_metrics::get_metrics
      * @return void
      */
     public function test_active_members_counts_lastaccess_within_4_weeks(): void {
@@ -109,7 +109,7 @@ final class school_metrics_test extends \advanced_testcase {
      * item 1). This is the test that actually exercises the category.path
      * prefix matching.
      *
-     * @covers \local_admindashboard\metrics\school_metrics::get_metrics
+     * @covers \local_admincockpit\metrics\school_metrics::get_metrics
      * @return void
      */
     public function test_course_counts_include_subcategory_courses(): void {

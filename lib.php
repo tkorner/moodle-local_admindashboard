@@ -15,16 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of interface functions for local_admindashboard.
+ * Library of interface functions for local_admincockpit.
  *
  * Currently no callback is required: the dashboard is reached via the
  * Reports admin page registered in settings.php, not via a navigation
  * node added from here. Kept as a placeholder for callbacks such as
- * local_admindashboard_extend_navigation() or
- * local_admindashboard_extend_settings_navigation(), should a direct
+ * local_admincockpit_extend_navigation() or
+ * local_admincockpit_extend_settings_navigation(), should a direct
  * navigation entry become necessary later.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

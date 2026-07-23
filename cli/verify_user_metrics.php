@@ -20,9 +20,9 @@
  *
  * Not a substitute for tests/metrics/user_metrics_test.php - this script
  * exists to let you eyeball the current instance's numbers immediately, e.g.:
- *   docker exec -it claude-moodle-1 php local/admindashboard/cli/verify_user_metrics.php
+ *   docker exec -it claude-moodle-1 php local/admincockpit/cli/verify_user_metrics.php
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,9 +31,9 @@ define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../config.php');
 
-use local_admindashboard\metrics\user_metrics;
+use local_admincockpit\metrics\user_metrics;
 
-$timerangedays = (int) (get_config('local_admindashboard', 'timerangedays') ?: 180);
+$timerangedays = (int) (get_config('local_admincockpit', 'timerangedays') ?: 180);
 
 $result = user_metrics::get_metrics($timerangedays);
 

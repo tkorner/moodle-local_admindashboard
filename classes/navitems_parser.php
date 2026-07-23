@@ -17,12 +17,12 @@
 /**
  * Parses the 'navitems' setting.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard;
+namespace local_admincockpit;
 
 /**
  * Turns the 'navitems' setting's raw text into grouped nav links.
@@ -136,10 +136,10 @@ class navitems_parser {
     public static function default_value(): string {
         $pluginman = \core\plugin_manager::instance();
 
-        $groupusers = get_string('navgroup_users', 'local_admindashboard');
-        $groupcourses = get_string('navgroup_courses', 'local_admindashboard');
-        $groupreports = get_string('navgroup_reports', 'local_admindashboard');
-        $groupsystem = get_string('navgroup_system', 'local_admindashboard');
+        $groupusers = get_string('navgroup_users', 'local_admincockpit');
+        $groupcourses = get_string('navgroup_courses', 'local_admincockpit');
+        $groupreports = get_string('navgroup_reports', 'local_admincockpit');
+        $groupsystem = get_string('navgroup_system', 'local_admincockpit');
 
         $lines = [
             self::line(get_string('pluginname', 'tool_uploaduser'), '/admin/tool/uploaduser/index.php', $groupusers),
@@ -173,9 +173,9 @@ class navitems_parser {
 
         if ($pluginman->get_plugin_info('theme_boost_union')) {
             $lines[] = self::line(
-                get_string('boostunionsettings', 'local_admindashboard'),
+                get_string('boostunionsettings', 'local_admincockpit'),
                 '/theme/boost_union/settings_overview.php',
-                get_string('navgroup_theme', 'local_admindashboard')
+                get_string('navgroup_theme', 'local_admincockpit')
             );
         }
 

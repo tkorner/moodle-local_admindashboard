@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'local_admindashboard', language 'de'.
+ * Strings for component 'local_admincockpit', language 'de'.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +29,7 @@ $string['activeschools_desc'] = 'Nur vollständig gepaarte Kürzel (Kohorte und 
 $string['activeschools_option'] = '{$a->idnumber} ({$a->cohortname} / {$a->categoryname})';
 $string['activeusers'] = 'Aktiv';
 $string['activeusers_help'] = 'Konten mit einem Website-Zugriff (lastaccess) innerhalb der letzten 4 Wochen. Dieses Fenster ist fix und unabhängig vom oben wählbaren Zeitraum.';
-$string['admindashboard:view'] = 'Admin-Dashboard ansehen';
+$string['admincockpit:view'] = 'Admin-Cockpit ansehen';
 $string['backtodashboard'] = 'Zurück zum Dashboard';
 $string['boostunionsettings'] = 'Boost-Union-Theme-Einstellungen';
 $string['cachepurged'] = 'Cache geleert - die Zahlen unten sind frisch berechnet.';
@@ -40,7 +40,7 @@ $string['dashboardintro'] = 'Übersicht über Nutzer- und Kursaktivität site-we
 $string['duplicateemails'] = 'Doppelte E-Mail-Adressen';
 $string['duplicateemails_none'] = 'Keine doppelten E-Mail-Adressen gefunden - hier gibt es nichts zu melden.';
 $string['duplicateemails_truncated'] = 'Zeigt die ersten 500 von {$a} Gruppen doppelter E-Mail-Adressen.';
-$string['eventdashboardviewed'] = 'Admin-Dashboard angesehen';
+$string['eventdashboardviewed'] = 'Admin-Cockpit angesehen';
 $string['groupinglabel'] = 'Bezeichnung der Gruppierung';
 $string['groupinglabel_desc'] = 'Wie eine "Gruppierung" (eine Kohorte und eine Top-Level-Kategorie mit identischer idnumber) im Dashboard genannt werden soll - z.B. Schule, Standort, Abteilung oder Fakultät. Rein kosmetisch: ändert nur die Formulierung, nie die Zuordnungslogik oder Auswahl.';
 $string['lastcomputed'] = 'Stand: {$a}, wird täglich aktualisiert.';
@@ -67,8 +67,8 @@ $string['onesided_cohortonly'] = '{$a}: Kohorte vorhanden, aber keine passende T
 $string['onesided_intro'] = 'Diese Kürzel sind nur einseitig gepflegt (Kohorte oder Kategorie, nicht beides) und können nicht als aktive Kohorten-/Kategorie-Gruppierung ausgewählt werden:';
 $string['onesided_none'] = 'Alle Kohorten und Top-Level-Kategorien mit idnumber sind vollständig gepaart - hier gibt es nichts zu melden.';
 $string['onesidedwarning'] = 'Einseitige Zuordnungen';
-$string['pluginname'] = 'Admin Dashboard';
-$string['privacy:metadata'] = 'Das Admin-Dashboard-Plugin speichert keine personenbezogenen Daten. Alle angezeigten Zahlen werden bei Aufruf aus bestehenden Moodle-Core-Daten (Nutzer, Kohorten, Kurse, Task-Logs) berechnet und von diesem Plugin nirgendwo geschrieben.';
+$string['pluginname'] = 'Admin Cockpit';
+$string['privacy:metadata'] = 'Das Admin-Cockpit-Plugin speichert keine personenbezogenen Daten. Alle angezeigten Zahlen werden bei Aufruf aus bestehenden Moodle-Core-Daten (Nutzer, Kohorten, Kurse, Task-Logs) berechnet und von diesem Plugin nirgendwo geschrieben.';
 $string['purgecache'] = 'Jetzt aktualisieren';
 $string['schoolcard_coursemanagement'] = 'Kursverwaltung';
 $string['schooltile_activemembers'] = 'Aktive Mitglieder';

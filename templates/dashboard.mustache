@@ -15,9 +15,9 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_admindashboard/dashboard
+    @template local_admincockpit/dashboard
 
-    Main admin dashboard page: global user tiles, per-school tile groups,
+    Main admin cockpit page: global user tiles, per-school tile groups,
     health signal tiles, and grouped navigation links.
 
     Example context (json):
@@ -29,7 +29,7 @@
             {"value": 30, "label": "30 days", "selected": false},
             {"value": 180, "label": "180 days", "selected": true}
         ],
-        "dashboardurl": "http://example.com/local/admindashboard/index.php",
+        "dashboardurl": "http://example.com/local/admincockpit/index.php",
         "usermetrics": [
             {"label": "Total users", "value": 42, "helpicon": ""}
         ],
@@ -42,7 +42,7 @@
             }
         ],
         "noschoolsconfigured": false,
-        "settingsurl": "http://example.com/admin/settings.php?section=local_admindashboard_settings",
+        "settingsurl": "http://example.com/admin/settings.php?section=local_admincockpit_settings",
         "lastcomputedtext": "Stand: 11 July 2026, 20:00, updates daily.",
         "sesskey": "abcdef1234",
         "healthsignals": [
@@ -64,22 +64,22 @@
         "nonavitemsconfigured": false
     }
 }}
-<div class="local-admindashboard">
+<div class="local-admincockpit">
 
     <p class="text-muted">{{introtext}}</p>
 
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
         <form method="get" action="{{dashboardurl}}" class="d-flex flex-wrap align-items-center m-0">
-            <label for="local-admindashboard-timerangedays" class="me-2">
-                {{#str}} timerange_label, local_admindashboard {{/str}}
+            <label for="local-admincockpit-timerangedays" class="me-2">
+                {{#str}} timerange_label, local_admincockpit {{/str}}
             </label>
-            <select name="timerangedays" id="local-admindashboard-timerangedays" class="form-select me-2 w-auto">
+            <select name="timerangedays" id="local-admincockpit-timerangedays" class="form-select me-2 w-auto">
                 {{#timerangeoptions}}
                 <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
                 {{/timerangeoptions}}
             </select>
             <button type="submit" class="btn btn-secondary">
-                {{#str}} timerange_submit, local_admindashboard {{/str}}
+                {{#str}} timerange_submit, local_admincockpit {{/str}}
             </button>
         </form>
 
@@ -90,13 +90,13 @@
                 <input type="hidden" name="purgecache" value="1">
                 <input type="hidden" name="timerangedays" value="{{timerangedays}}">
                 <button type="submit" class="btn btn-link btn-sm p-0">
-                    {{#str}} purgecache, local_admindashboard {{/str}}
+                    {{#str}} purgecache, local_admincockpit {{/str}}
                 </button>
             </form>
         </div>
     </div>
 
-    <h3>{{#str}} section_globalusers, local_admindashboard {{/str}}</h3>
+    <h3>{{#str}} section_globalusers, local_admincockpit {{/str}}</h3>
     <div class="row mb-4">
         {{#usermetrics}}
         <div class="col-sm-4">
@@ -110,18 +110,18 @@
         {{/usermetrics}}
     </div>
 
-    <h3>{{#str}} section_schools, local_admindashboard, {{groupinglabel}} {{/str}}</h3>
+    <h3>{{#str}} section_schools, local_admincockpit, {{groupinglabel}} {{/str}}</h3>
     {{#noschoolsconfigured}}
     <p>
-        {{#str}} noschoolsconfigured, local_admindashboard, {{groupinglabel}} {{/str}}
-        <a href="{{settingsurl}}">{{#str}} noschoolsconfigured_linktext, local_admindashboard {{/str}}</a>
+        {{#str}} noschoolsconfigured, local_admincockpit, {{groupinglabel}} {{/str}}
+        <a href="{{settingsurl}}">{{#str}} noschoolsconfigured_linktext, local_admincockpit {{/str}}</a>
     </p>
     {{/noschoolsconfigured}}
     {{#schools}}
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <strong>{{name}} ({{idnumber}})</strong>
-            <a href="{{coursemanagementurl}}">{{#str}} schoolcard_coursemanagement, local_admindashboard {{/str}}</a>
+            <a href="{{coursemanagementurl}}">{{#str}} schoolcard_coursemanagement, local_admincockpit {{/str}}</a>
         </div>
         <div class="card-body">
             <div class="row">
@@ -136,7 +136,7 @@
     </div>
     {{/schools}}
 
-    <h3>{{#str}} section_healthsignals, local_admindashboard {{/str}}</h3>
+    <h3>{{#str}} section_healthsignals, local_admincockpit {{/str}}</h3>
     <div class="row mb-4 align-items-stretch">
         {{#healthsignals}}
         <div class="col-sm-3 mb-2">
@@ -158,11 +158,11 @@
         {{/healthsignals}}
     </div>
 
-    <h3>{{#str}} section_navigation, local_admindashboard {{/str}}</h3>
+    <h3>{{#str}} section_navigation, local_admincockpit {{/str}}</h3>
     {{#nonavitemsconfigured}}
     <p>
-        {{#str}} nonavitemsconfigured, local_admindashboard {{/str}}
-        <a href="{{settingsurl}}">{{#str}} noschoolsconfigured_linktext, local_admindashboard {{/str}}</a>
+        {{#str}} nonavitemsconfigured, local_admincockpit {{/str}}
+        <a href="{{settingsurl}}">{{#str}} noschoolsconfigured_linktext, local_admincockpit {{/str}}</a>
     </p>
     {{/nonavitemsconfigured}}
     <div class="row">

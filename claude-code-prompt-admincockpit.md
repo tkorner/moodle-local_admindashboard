@@ -1,11 +1,11 @@
-# Claude Code Prompt – local_admindashboard
+# Claude Code Prompt – local_admincockpit
 
-Diese Datei enthält die Schritt-für-Schritt-Sequenz für die Implementierung, basierend auf `SPEC-admindashboard.md`. Jeder Schritt ist als eigener Prompt für Claude Code gedacht – erst nach Bestätigung/Review des einen Schritts zum nächsten übergehen.
+Diese Datei enthält die Schritt-für-Schritt-Sequenz für die Implementierung, basierend auf `SPEC-admincockpit.md`. Jeder Schritt ist als eigener Prompt für Claude Code gedacht – erst nach Bestätigung/Review des einen Schritts zum nächsten übergehen.
 
-Vor Schritt 1: `SPEC-admindashboard.md` in dasselbe Verzeichnis wie `CLAUDE.md` legen, damit Claude Code beides als Kontext hat. Ein `CLAUDE.md` für dieses Projekt sollte enthalten: Zielumgebung (Moodle 5.2.x in Docker, `/var/www/html/public/local/`), Coding-Standard (core-contribution-taugliche Qualität, Moodle Coding Style), und den Hinweis, dass dies ein Reporting-/Navigations-Plugin ohne eigenes DB-Schema ist.
+Vor Schritt 1: `SPEC-admincockpit.md` in dasselbe Verzeichnis wie `CLAUDE.md` legen, damit Claude Code beides als Kontext hat. Ein `CLAUDE.md` für dieses Projekt sollte enthalten: Zielumgebung (Moodle 5.2.x in Docker, `/var/www/html/public/local/`), Coding-Standard (core-contribution-taugliche Qualität, Moodle Coding Style), und den Hinweis, dass dies ein Reporting-/Navigations-Plugin ohne eigenes DB-Schema ist.
 
 **Testing-Hinweis (Stand: kein GUI-Zugriff, PHPUnit lokal nicht installierbar):** Statt lokaler PHPUnit-Ausführung werden zwei Ebenen genutzt:
-1. **CLI-Smoke-Skripte** unter `cli/verify_*.php` für sofortiges Feedback während der Session (`docker exec -it claude-moodle-1 php /var/www/html/local/admindashboard/cli/verify_*.php`)
+1. **CLI-Smoke-Skripte** unter `cli/verify_*.php` für sofortiges Feedback während der Session (`docker exec -it claude-moodle-1 php /var/www/html/local/admincockpit/cli/verify_*.php`)
 2. **GitHub Actions mit `moodlehq/moodle-plugin-ci`** für die echte PHPUnit-/Behat-/Codechecker-Ausführung bei jedem Push (siehe Schritt 0b)
 
 PHPUnit-Testdateien werden trotzdem geschrieben (laufen nur nicht lokal, sondern über CI) – nicht weglassen.
@@ -18,20 +18,20 @@ PHPUnit-Testdateien werden trotzdem geschrieben (laufen nur nicht lokal, sondern
 
 ```
 Erstelle das Grundgerüst für ein neues Moodle-Plugin vom Typ "local", Komponente
-local_admindashboard, für Moodle 5.2.
+local_admincockpit, für Moodle 5.2.
 
 Erstelle:
-- version.php (component local_admindashboard, aktuelle Version, requires für Moodle 5.2)
+- version.php (component local_admincockpit, aktuelle Version, requires für Moodle 5.2)
 - lib.php (leer/Platzhalter, mit den üblichen Callback-Stubs falls später benötigt)
 - classes/ (leeres Verzeichnis mit .gitkeep)
-- lang/en/local_admindashboard.php mit Basiseinträgen (pluginname)
-- lang/de/local_admindashboard.php mit den deutschen Übersetzungen der gleichen Strings
+- lang/en/local_admincockpit.php mit Basiseinträgen (pluginname)
+- lang/de/local_admincockpit.php mit den deutschen Übersetzungen der gleichen Strings
 - settings.php: registriert eine eigene Admin-Seite unter Site administration > Reports
   (admin_externalpage, nicht admin_settingpage, da es keine reinen Konfigurationswerte
   sondern eine Dashboard-Ansicht ist) plus eine separate Settings-Seite für die
   Konfiguration (Zeitraum, aktive Schul-Kürzel) unter Site administration > Plugins >
-  Local plugins > Admin Dashboard
-- db/access.php mit der Capability local/admindashboard:view
+  Local plugins > Admin Cockpit
+- db/access.php mit der Capability local/admincockpit:view
   (CONTEXT_SYSTEM, archetypes: manager => CAP_ALLOW)
 
 Folge den Moodle-Coding-Guidelines und der Standard-Verzeichnisstruktur für local-Plugins.
@@ -43,7 +43,7 @@ Committe noch nichts, ich möchte das Ergebnis erst reviewen.
 ## Schritt 1 – Kürzel-Erkennung (Kohorte ↔ Kategorie Matching) ✅ erledigt
 
 ```
-Implementiere die Klasse classes/school_matcher.php (Namespace local_admindashboard).
+Implementiere die Klasse classes/school_matcher.php (Namespace local_admincockpit).
 
 Aufgabe der Klasse:
 - Findet alle system-weiten Kohorten (cohort-Tabelle, contextid = System-Context) mit
@@ -97,15 +97,15 @@ PHPUnit-Test aus Schritt 1.
 ## Schritt 2 – Einstellungsseite (Zeitraum + aktive Kürzel)
 
 ```
-Baue die Konfigurationsseite für local_admindashboard (Site administration > Plugins >
-Local plugins > Admin Dashboard).
+Baue die Konfigurationsseite für local_admincockpit (Site administration > Plugins >
+Local plugins > Admin Cockpit).
 
 Enthält:
 - Auswahlfeld "Zeitraum für Neu-Zählungen" mit Optionen 30/90/180/360 Tage
-  (Setting-Name: local_admindashboard/timerangedays, Default 180)
+  (Setting-Name: local_admincockpit/timerangedays, Default 180)
 - Mehrfachauswahl "Aktive Schul-Kürzel": Optionen dynamisch aus school_matcher::get_matched()
   befüllt (nicht hartcodiert), gespeichert als kommagetrennter String oder JSON in
-  local_admindashboard/activeschools
+  local_admincockpit/activeschools
 - Schreibgeschützter Hinweisblock, der cohort_only und category_only aus school_matcher
   auflistet ("Diese Kürzel sind nur einseitig gepflegt: ...") – als admin_setting_description
   oder eigenes admin_setting-Element
@@ -125,7 +125,7 @@ berechnet und als einfaches Datenobjekt/Array zurückgibt:
   hier mitgezählt werden soll oder nicht, und dokumentiere die Entscheidung im Docblock)
 - Anzahl Nutzer mit lastaccess innerhalb der letzten 4 Wochen
 - Anzahl Nutzer mit timecreated innerhalb des konfigurierten Zeitraums
-  (Zeitraum aus dem Setting local_admindashboard/timerangedays)
+  (Zeitraum aus dem Setting local_admincockpit/timerangedays)
 
 Schreibe effiziente SQL-Queries (COUNT-Abfragen, keine vollständigen Recordsets laden).
 Ergänze einen PHPUnit-Test mit Testdaten für alle drei Werte (läuft über CI, siehe
@@ -194,7 +194,7 @@ Erstelle zwei einfache Seiten (keine Blöcke):
   health_signals::courses_without_enddate(), je Zeile ein Link direkt in die
   Kurseinstellungen (course/edit.php?id=X)
 
-Beide Seiten benötigen die Capability local/admindashboard:view und einen Zurück-Link
+Beide Seiten benötigen die Capability local/admincockpit:view und einen Zurück-Link
 zur Haupt-Dashboard-Seite. Nutze eine einfache table-Ausgabe (core html_table oder
 core_reportbuilder system_report, je nachdem was mit weniger Code auskommt für diesen
 einfachen Fall).
@@ -325,7 +325,7 @@ Führe Caching über die Moodle Cache API (MUC) ein, TTL 1 Tag (86400 Sekunden).
 
 2. Baue die bestehenden Berechnungsklassen (user_metrics, school_metrics,
    health_signals) so um, dass sie zuerst im Cache nachsehen (cache::make('local_
-   admindashboard', 'dashboarddata')->get($key)) und nur bei Cache-Miss neu rechnen
+   admincockpit', 'dashboarddata')->get($key)) und nur bei Cache-Miss neu rechnen
    und das Ergebnis zurückschreiben. Cache-Key muss den aktuell gewählten Zeitraum
    (GET-Parameter) mit einschliessen, da unterschiedliche Zeiträume unterschiedliche
    Ergebnisse liefern (z.B. Key-Schema 'usermetrics_' . $timerangedays).
@@ -333,7 +333,7 @@ Führe Caching über die Moodle Cache API (MUC) ein, TTL 1 Tag (86400 Sekunden).
 3. Baue einen "Cache jetzt leeren"-Button direkt auf der Dashboard-Seite (nicht nur
    über die generelle Moodle-Cache-Verwaltung erreichbar). Der Button:
    - erfordert sesskey-Prüfung (require_sesskey())
-   - erfordert dieselbe Capability wie die Dashboard-Seite (local/admindashboard:view)
+   - erfordert dieselbe Capability wie die Dashboard-Seite (local/admincockpit:view)
      oder eine eigene lokale Kaskade dafür, falls sinnvoll -entscheide, was
      konsistenter ist
    - ruft $cache->purge() nur auf die eigene Cache-Definition auf, NICHT
@@ -509,7 +509,7 @@ Fakultäten) nutzbar sein, nicht nur für Schulen.
 
 2. Ersetze alle hartcodierten Vorkommen von "Schule"/"Schulen" im UI (Kachel-
    Überschrift "Pro Schule", Settings-Beschriftungen wie "Aktive Schul-Kürzel") durch
-   dynamische Verwendung von get_config('local_admindashboard', 'groupinglabel')
+   dynamische Verwendung von get_config('local_admincockpit', 'groupinglabel')
    bzw. eine entsprechende Sprachstring-Platzhalter-Lösung (get_string mit $a-Platzhalter
    statt hartcodiertem Substantiv).
 
@@ -569,7 +569,7 @@ Bestandteile:
 
 3. LICENSE-Datei: GPLv3-Volltext (Standard-Lizenz für Moodle-Plugins)
 
-4. Vervollständige lang/en/local_admindashboard.php als vollständige Basissprache -
+4. Vervollständige lang/en/local_admincockpit.php als vollständige Basissprache -
    das ist Pflicht für den Directory-Eintrag, auch wenn lang/de/ die primäre
    Nutzungssprache bleibt
 

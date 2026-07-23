@@ -22,18 +22,18 @@
  * numbers should be labelled/grouped, which is exactly what
  * classes/metrics/*.php must NOT know about.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\output;
+namespace local_admincockpit\output;
 
-use local_admindashboard\navitems_parser;
-use local_admindashboard\school_matcher;
-use local_admindashboard\metrics\health_signals;
-use local_admindashboard\metrics\school_metrics;
-use local_admindashboard\metrics\user_metrics;
+use local_admincockpit\navitems_parser;
+use local_admincockpit\school_matcher;
+use local_admincockpit\metrics\health_signals;
+use local_admincockpit\metrics\school_metrics;
+use local_admincockpit\metrics\user_metrics;
 
 /**
  * Builds the mustache context for the main dashboard template.
@@ -63,15 +63,15 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
         $navgroups = $this->export_nav_groups();
 
         return [
-            'introtext' => get_string('dashboardintro', 'local_admindashboard', $grouping),
+            'introtext' => get_string('dashboardintro', 'local_admincockpit', $grouping),
             'groupinglabel' => $grouping,
             'timerangedays' => $this->timerangedays,
             'timerangeoptions' => $this->export_timerange_options(),
-            'dashboardurl' => (new \core\url('/local/admindashboard/index.php'))->out(false),
+            'dashboardurl' => (new \core\url('/local/admincockpit/index.php'))->out(false),
             'usermetrics' => $this->export_user_metrics($output),
             'schools' => $this->export_schools($output),
             'noschoolsconfigured' => empty($this->get_active_matched_schools()),
-            'settingsurl' => (new \core\url('/admin/settings.php', ['section' => 'local_admindashboard_settings']))->out(false),
+            'settingsurl' => (new \core\url('/admin/settings.php', ['section' => 'local_admincockpit_settings']))->out(false),
             'lastcomputedtext' => $this->export_lastcomputedtext(),
             'sesskey' => sesskey(),
             'healthsignals' => $this->export_health_signals($output),
@@ -89,7 +89,7 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      * @return string
      */
     private function grouping_label(): string {
-        return (string) get_config('local_admindashboard', 'groupinglabel') ?: school_matcher::DEFAULT_GROUPING_LABEL;
+        return (string) get_config('local_admincockpit', 'groupinglabel') ?: school_matcher::DEFAULT_GROUPING_LABEL;
     }
 
     /**
@@ -120,19 +120,19 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
 
         return [
             (object) [
-                'label' => get_string('tile_totalusers', 'local_admindashboard'),
+                'label' => get_string('tile_totalusers', 'local_admincockpit'),
                 'value' => $metrics->totalusers,
                 'helpicon' => '',
             ],
             (object) [
-                'label' => get_string('tile_activeusers', 'local_admindashboard'),
+                'label' => get_string('tile_activeusers', 'local_admincockpit'),
                 'value' => $metrics->activeusers,
-                'helpicon' => $output->help_icon('activeusers', 'local_admindashboard'),
+                'helpicon' => $output->help_icon('activeusers', 'local_admincockpit'),
             ],
             (object) [
-                'label' => get_string('tile_newusers', 'local_admindashboard'),
+                'label' => get_string('tile_newusers', 'local_admincockpit'),
                 'value' => $metrics->newusers,
-                'helpicon' => $output->help_icon('newinperiod', 'local_admindashboard'),
+                'helpicon' => $output->help_icon('newinperiod', 'local_admincockpit'),
             ],
         ];
     }
@@ -151,7 +151,7 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      */
     private function export_lastcomputedtext(): string {
         $metrics = user_metrics::get_metrics($this->timerangedays);
-        return get_string('lastcomputed', 'local_admindashboard', userdate($metrics->computedat));
+        return get_string('lastcomputed', 'local_admincockpit', userdate($metrics->computedat));
     }
 
     /**
@@ -176,7 +176,7 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      *         categoryname), keyed by idnumber
      */
     private function get_active_matched_schools(): array {
-        $activecodes = array_filter(explode(',', (string) get_config('local_admindashboard', 'activeschools')));
+        $activecodes = array_filter(explode(',', (string) get_config('local_admincockpit', 'activeschools')));
         if (empty($activecodes)) {
             return [];
         }
@@ -210,29 +210,29 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
                 'name' => $school->cohortname,
                 'tiles' => [
                     (object) [
-                        'label' => get_string('schooltile_membercount', 'local_admindashboard'),
+                        'label' => get_string('schooltile_membercount', 'local_admincockpit'),
                         'value' => $metrics->membercount,
                         'helpicon' => '',
                     ],
                     (object) [
-                        'label' => get_string('schooltile_newmembers', 'local_admindashboard'),
+                        'label' => get_string('schooltile_newmembers', 'local_admincockpit'),
                         'value' => $metrics->newmembers,
-                        'helpicon' => $output->help_icon('newinperiod', 'local_admindashboard'),
+                        'helpicon' => $output->help_icon('newinperiod', 'local_admincockpit'),
                     ],
                     (object) [
-                        'label' => get_string('schooltile_activemembers', 'local_admindashboard'),
+                        'label' => get_string('schooltile_activemembers', 'local_admincockpit'),
                         'value' => $metrics->activemembers,
-                        'helpicon' => $output->help_icon('activeusers', 'local_admindashboard'),
+                        'helpicon' => $output->help_icon('activeusers', 'local_admincockpit'),
                     ],
                     (object) [
-                        'label' => get_string('schooltile_coursecount', 'local_admindashboard'),
+                        'label' => get_string('schooltile_coursecount', 'local_admincockpit'),
                         'value' => $metrics->coursecount,
                         'helpicon' => '',
                     ],
                     (object) [
-                        'label' => get_string('schooltile_newcourses', 'local_admindashboard'),
+                        'label' => get_string('schooltile_newcourses', 'local_admincockpit'),
                         'value' => $metrics->newcourses,
-                        'helpicon' => $output->help_icon('newinperiod', 'local_admindashboard'),
+                        'helpicon' => $output->help_icon('newinperiod', 'local_admincockpit'),
                     ],
                 ],
                 'coursemanagementurl' => (new \core\url(
@@ -259,32 +259,32 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
 
         return [
             $this->make_signal_tile(
-                get_string('duplicateemails', 'local_admindashboard'),
+                get_string('duplicateemails', 'local_admincockpit'),
                 $duplicates->count,
-                '/local/admindashboard/duplicateemails.php',
+                '/local/admincockpit/duplicateemails.php',
                 $duplicates->count > 0 ? 'warning' : 'ok'
             ),
             $this->make_signal_tile(
-                get_string('courseswithoutenddate', 'local_admindashboard'),
+                get_string('courseswithoutenddate', 'local_admincockpit'),
                 $noenddate->count,
-                '/local/admindashboard/courseswithoutenddate.php',
+                '/local/admincockpit/courseswithoutenddate.php',
                 $noenddate->count > 0 ? 'warning' : 'ok'
             ),
             $this->make_signal_tile(
-                get_string('signal_security', 'local_admindashboard'),
+                get_string('signal_security', 'local_admincockpit'),
                 $this->format_security_value($security),
                 '/report/security/index.php',
                 $security->error > 0 ? 'error' : ($security->warning > 0 ? 'warning' : 'ok'),
                 '',
-                $output->help_icon('signal_security', 'local_admindashboard')
+                $output->help_icon('signal_security', 'local_admincockpit')
             ),
             $this->make_signal_tile(
-                get_string('signal_cron', 'local_admindashboard'),
+                get_string('signal_cron', 'local_admincockpit'),
                 $this->format_cron_value($cron),
                 '/admin/tool/task/scheduledtasks.php',
                 $this->cron_severity($cron),
                 $cron->lastrunat > 0 ? userdate($cron->lastrunat) : '',
-                $output->help_icon('signal_cron', 'local_admindashboard')
+                $output->help_icon('signal_cron', 'local_admincockpit')
             ),
         ];
     }
@@ -374,11 +374,11 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      */
     private function format_security_value(\stdClass $security): string {
         $parts = [
-            get_string('signal_security_ok', 'local_admindashboard', $security->ok),
-            get_string('signal_security_warning', 'local_admindashboard', $security->warning),
+            get_string('signal_security_ok', 'local_admincockpit', $security->ok),
+            get_string('signal_security_warning', 'local_admincockpit', $security->warning),
         ];
         if ($security->error > 0) {
-            $parts[] = get_string('signal_security_error', 'local_admindashboard', $security->error);
+            $parts[] = get_string('signal_security_error', 'local_admincockpit', $security->error);
         }
 
         return implode(' · ', $parts);
@@ -399,10 +399,10 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      */
     private function format_cron_value(\stdClass $cron): string {
         $lastrun = $cron->lastrunat > 0
-            ? get_string('signal_cron_lastrun', 'local_admindashboard', format_time(time() - $cron->lastrunat))
-            : get_string('signal_cron_neverrun', 'local_admindashboard');
+            ? get_string('signal_cron_lastrun', 'local_admincockpit', format_time(time() - $cron->lastrunat))
+            : get_string('signal_cron_neverrun', 'local_admincockpit');
 
-        return $lastrun . ' ' . get_string('signal_cron_failedtasks', 'local_admindashboard', $cron->failedtasks24h);
+        return $lastrun . ' ' . get_string('signal_cron_failedtasks', 'local_admincockpit', $cron->failedtasks24h);
     }
 
     /**
@@ -454,7 +454,7 @@ class dashboard_page implements \core\output\renderable, \core\output\templatabl
      * @return array of stdClass: title, items (array of stdClass: label, url)
      */
     private function export_nav_groups(): array {
-        $rawnavitems = get_config('local_admindashboard', 'navitems');
+        $rawnavitems = get_config('local_admincockpit', 'navitems');
         if ($rawnavitems === false) {
             // Never saved (e.g. right after this setting was added by an upgrade) - not the same as an
             // admin having since deliberately emptied it, which must stay empty (see 'nonavitemsconfigured'

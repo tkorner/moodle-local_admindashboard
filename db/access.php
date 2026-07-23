@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capabilities for local_admindashboard plugin.
+ * Capabilities for local_admincockpit plugin.
  *
- * Defines the custom capability 'local/admindashboard:view', which
+ * Defines the custom capability 'local/admincockpit:view', which
  * gates access to the dashboard report page. Granted to the Manager
  * archetype by default.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +29,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-    'local/admindashboard:view' => [
+    'local/admincockpit:view' => [
         // RISK_PERSONAL: duplicateemails.php exposes every duplicated account's name and email address,
         // so an admin assigning this capability to a custom role should see the personal-data risk flag,
         // same as core does for capabilities exposing similar user lists (e.g. moodle/user:viewalldetails).

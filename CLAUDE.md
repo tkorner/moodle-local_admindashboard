@@ -1,4 +1,4 @@
-# CLAUDE.md – local_admindashboard
+# CLAUDE.md – local_admincockpit
 
 Kontext-Datei für Claude Code Sessions in diesem Projekt. Vor Arbeitsbeginn lesen.
 
@@ -6,19 +6,19 @@ Kontext-Datei für Claude Code Sessions in diesem Projekt. Vor Arbeitsbeginn les
 
 ## Projektüberblick
 
-Moodle-Plugin `local_admindashboard`: Navigations- und Kennzahlen-Dashboard für Administratoren. Zeigt Nutzer-/Kurs-Kennzahlen pro "Schule" (Kohorte + Top-Level-Kategorie, verknüpft über `idnumber`), Health-Signale mit Call-to-Action sowie Direktlinks zu häufig genutzten Verwaltungsseiten.
+Moodle-Plugin `local_admincockpit`: Navigations- und Kennzahlen-Dashboard für Administratoren. Zeigt Nutzer-/Kurs-Kennzahlen pro "Schule" (Kohorte + Top-Level-Kategorie, verknüpft über `idnumber`), Health-Signale mit Call-to-Action sowie Direktlinks zu häufig genutzten Verwaltungsseiten.
 
-**Quelle der Wahrheit für Anforderungen:** `SPEC-admindashboard.md` im selben Verzeichnis. Bei Widersprüchen zwischen dieser Datei und der Spec gilt die Spec – hier nachfragen statt selbst zu entscheiden.
+**Quelle der Wahrheit für Anforderungen:** `SPEC-admincockpit.md` im selben Verzeichnis. Bei Widersprüchen zwischen dieser Datei und der Spec gilt die Spec – hier nachfragen statt selbst zu entscheiden.
 
-**Umsetzungssequenz:** `claude-code-prompt-admindashboard.md` im selben Verzeichnis. Enthält die Schritte, die **einzeln nacheinander** abgearbeitet werden – nicht mehrere Schritte auf einmal umsetzen, auch wenn der Kontext das hergeben würde. Nach jedem Schritt wird das Ergebnis reviewt, bevor der nächste beginnt. Die Liste ist im Verlauf gewachsen (Zwischenschritte wie 0b, 7b–7h kamen dazu) – die "Fortschritt"-Zeile weiter unten und die Datei selbst sind die Quelle der Wahrheit für den aktuellen Stand, nicht eine fixe Schrittanzahl.
+**Umsetzungssequenz:** `claude-code-prompt-admincockpit.md` im selben Verzeichnis. Enthält die Schritte, die **einzeln nacheinander** abgearbeitet werden – nicht mehrere Schritte auf einmal umsetzen, auch wenn der Kontext das hergeben würde. Nach jedem Schritt wird das Ergebnis reviewt, bevor der nächste beginnt. Die Liste ist im Verlauf gewachsen (Zwischenschritte wie 0b, 7b–7h kamen dazu) – die "Fortschritt"-Zeile weiter unten und die Datei selbst sind die Quelle der Wahrheit für den aktuellen Stand, nicht eine fixe Schrittanzahl.
 
 ---
 
 ## Zielumgebung
 
 - **Moodle-Version:** 5.2.x
-- **Lokaler Plugin-Ordner:** `/Users/tkorner/Documents/claude/plugins/local/admindashboard/`
-- **Docker-Mount-Ziel:** `/var/www/html/public/local/admindashboard/` (Moodle 5.x `public/`-Verzeichnisstruktur - verifiziert via `docker inspect claude-moodle-1`, nicht die ältere flache `/var/www/html/local/`-Struktur)
+- **Lokaler Plugin-Ordner:** `/Users/tkorner/Documents/claude/plugins/local/admincockpit/`
+- **Docker-Mount-Ziel:** `/var/www/html/public/local/admincockpit/` (Moodle 5.x `public/`-Verzeichnisstruktur - verifiziert via `docker inspect claude-moodle-1`, nicht die ältere flache `/var/www/html/local/`-Struktur)
 - **Docker-Compose-Mount:** `./plugins/local:/var/www/html/public/local`
 - **Container:** `claude-moodle-1` (Image `erseco/alpine-moodle`), DB in `claude-mariadb-1`
 - **PHP/DB:** Standard-Alpine-Moodle-Setup, keine Sonderkonfiguration bekannt
@@ -27,8 +27,8 @@ Moodle-Plugin `local_admindashboard`: Navigations- und Kennzahlen-Dashboard für
 
 ## Git
 
-- **Repo:** `tkorner/moodle-local_admindashboard` (privat)
-- Repo-Root = Plugin-Root (also `version.php` direkt im Repo-Root, kein `local/admindashboard/`-Unterordner im Git-Repo selbst – Moodle-Konvention für Einzelplugin-Repos)
+- **Repo:** `tkorner/moodle-local_admincockpit` (privat)
+- Repo-Root = Plugin-Root (also `version.php` direkt im Repo-Root, kein `local/admincockpit/`-Unterordner im Git-Repo selbst – Moodle-Konvention für Einzelplugin-Repos)
 - Nach jedem abgeschlossenen und reviewten Schritt aus dem Prompt-Dokument committen, damit einzelne Schritte bei Bedarf zurückgerollt werden können
 
 ---
@@ -60,13 +60,13 @@ Kein lokales GUI. Drei Ebenen (Stand Code-Review 2026-07-16 – entgegen der lan
 
 1. **CLI-Smoke-Skripte** (`cli/verify_*.php`) – sofortiges Feedback während der Session, direkt gegen die echten Daten der laufenden Docker-Instanz, ohne Testframework:
    ```bash
-   docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_school_matcher.php
+   docker exec -it claude-moodle-1 php /var/www/html/public/local/admincockpit/cli/verify_school_matcher.php
    ```
    Kein Ersatz für echte Tests, nur Sichtprüfung während der Entwicklung.
 
 2. **PHPUnit direkt im Container** – lauffähig, `vendor/bin/phpunit` existiert:
    ```bash
-   docker exec -it claude-moodle-1 sh -c "cd /var/www/html && vendor/bin/phpunit --configuration phpunit.xml --testsuite local_admindashboard_testsuite"
+   docker exec -it claude-moodle-1 sh -c "cd /var/www/html && vendor/bin/phpunit --configuration phpunit.xml --testsuite local_admincockpit_testsuite"
    ```
    Sofortiges, vollständiges Testfeedback ohne auf CI zu warten – neue `*_test.php`-Dateien unter `tests/` werden automatisch erkannt (die registrierte Testsuite scannt per Datei-Suffix), kein `--buildconfig` nötig; nur bei einer komplett neuen Testsuite/Plugin-Komponente wäre das erforderlich. Nach jeder Änderung an `version.php` (z.B. Versionsbump) meldet PHPUnit "was initialised for different version" und muss einmalig neu initialisiert werden:
 
@@ -109,12 +109,13 @@ Diese Liste bei Bedarf ergänzen, wenn im Verlauf der Implementierung neue offen
 
 Checkliste liegt ausserhalb dieses Repos (`Marketplace.md` im Claude-Projektverzeichnis, nicht im Plugin-Repo selbst). Stand 2026-07-22:
 
-- **Compliance-Audit durchgeführt:** Lizenz-Header (alle `.php`), GPLv3-`LICENSE`, Privacy-Provider (`null_provider`, da kein eigenes DB-Schema, siehe oben), keine Treffer für `eval()`/`unserialize()`/rohes `$_REQUEST`/`$_GET`/`$_POST`, keine rohe SQL-Konkatenation (`$DB->...` mit Platzhaltern durchgängig), Settings ausschliesslich über `get_config('local_admindashboard', ...)`/`config_plugins`, kein `composer.json` nötig, öffentlicher GitHub-Issue-Tracker vorhanden (Repo `tkorner/moodle-local_admindashboard`, öffentlich, Issues aktiviert) – alles ✅, keine Fixes nötig.
+- **Compliance-Audit durchgeführt:** Lizenz-Header (alle `.php`), GPLv3-`LICENSE`, Privacy-Provider (`null_provider`, da kein eigenes DB-Schema, siehe oben), keine Treffer für `eval()`/`unserialize()`/rohes `$_REQUEST`/`$_GET`/`$_POST`, keine rohe SQL-Konkatenation (`$DB->...` mit Platzhaltern durchgängig), Settings ausschliesslich über `get_config('local_admincockpit', ...)`/`config_plugins`, kein `composer.json` nötig, öffentlicher GitHub-Issue-Tracker vorhanden (Repo `tkorner/moodle-local_admincockpit`, öffentlich, Issues aktiviert) – alles ✅, keine Fixes nötig.
 - **CI-Matrix erweitert:** vorher nur MariaDB, jetzt zusätzlich PostgreSQL (Guideline verlangt beide Cross-DB-Engines) – siehe `.github/workflows/ci.yml`.
 - **Reifegrad angehoben:** `version.php` von `MATURITY_RC`/`1.1.1` auf `MATURITY_STABLE`/`1.2.0` für die Submission.
 - **Bewusste Abweichung dokumentiert:** `lang/de/` wird schon vor offizieller AMOS-Freigabe mitgeliefert – siehe README.md "Known open assumptions", letzter Punkt.
 - **Nicht automatisiert (bewusst, siehe Rückfrage 2026-07-22):** Screenshots (Dashboard + Settings) macht der Nutzer selbst per Browser-Login; das tatsächliche Release-Zip auf einer frischen Instanz testen (Checklisten-Punkt 8 – der `admin_externalpage_setup()`-Fehlerklasse) bleibt ebenfalls manuelle Aufgabe vor dem nächsten Tag.
 - **Git-Tag + GitHub-Release + tatsächliche Einreichung bei marketplace.moodle.com:** explizit erst nach erneuter Rücksprache, nicht automatisch am Ende dieser Session.
+- **Frankenstyle-Rename (2026-07-23):** `local_admindashboard` war bereits von zwei fremden GitHub-Repos belegt (`UzainAliSiddiqui/moodle-local_admindashboard`, eingebettetes Plugin in `Integer-Training/integermoodle1`) und damit für die Marketplace-Einreichung nicht nutzbar. Neuer, kollisionsfrei geprüfter Name: `local_admincockpit`, sichtbarer Produktname konsistent auf "Admin Cockpit" geändert. GitHub-Repo entsprechend umbenannt (`tkorner/moodle-local_admincockpit`). Version auf `2026072300`/`2.0.0` angehoben (Major-Bump statt Patch, da der Rename für bestehende Installationen ein Breaking Change ist – altes Plugin muss vor der Installation von `local_admincockpit` deinstalliert werden). Alte Tags/Releases `v1.0.0`–`v1.2.0` bleiben unter dem alten Namen als historische Commits bestehen (nicht gelöscht/umgeschrieben); neue Historie ab `v2.0.0` läuft unter `local_admincockpit`.
 
 ---
 
@@ -130,7 +131,7 @@ GPL-3.0. Relevante generische Bausteine: `.prompts/core/security-checklist.md`,
 (Stand aktuell) – die dortigen Guides decken block/enrol/filter/mod/qbank/qtype/report/
 tiny ab, lokale Plugins nur über die generischen Core-Dateien. Bei Bedarf als
 zusätzliche Cross-Referenz nutzen, nicht als primäre Anleitung (diese bleibt SPEC +
-claude-code-prompt-admindashboard.md).
+claude-code-prompt-admincockpit.md).
 
 ---
 

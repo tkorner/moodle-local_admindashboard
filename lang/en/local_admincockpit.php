@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'local_admindashboard', language 'en'.
+ * Strings for component 'local_admincockpit', language 'en'.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,8 +29,8 @@ $string['activeschools_desc'] = 'Only fully matched codes (cohort and top-level 
 $string['activeschools_option'] = '{$a->idnumber} ({$a->cohortname} / {$a->categoryname})';
 $string['activeusers'] = 'Active';
 $string['activeusers_help'] = 'Accounts with a site access (lastaccess) within the last 4 weeks. This window is fixed and independent of the time range selectable above.';
-$string['activeusers_link'] = 'https://github.com/tkorner/moodle-local_admindashboard';
-$string['admindashboard:view'] = 'View the admin dashboard';
+$string['activeusers_link'] = 'https://github.com/tkorner/moodle-local_admincockpit';
+$string['admincockpit:view'] = 'View the admin cockpit';
 $string['backtodashboard'] = 'Back to dashboard';
 $string['boostunionsettings'] = 'Boost Union theme settings';
 $string['cachepurged'] = 'Cache cleared - the numbers below are freshly computed.';
@@ -41,7 +41,7 @@ $string['dashboardintro'] = 'Overview of user and course activity across the who
 $string['duplicateemails'] = 'Duplicate email addresses';
 $string['duplicateemails_none'] = 'No duplicate email addresses found - nothing to report here.';
 $string['duplicateemails_truncated'] = 'Showing the first 500 of {$a} duplicate-email groups.';
-$string['eventdashboardviewed'] = 'Viewed admin dashboard';
+$string['eventdashboardviewed'] = 'Viewed admin cockpit';
 $string['groupinglabel'] = 'Grouping label';
 $string['groupinglabel_desc'] = 'What to call a "grouping" (a cohort and a top-level category sharing the same idnumber) in the dashboard UI - e.g. School, Site, Department, or Faculty. Purely cosmetic: it only changes wording, never how groupings are matched or selected.';
 $string['lastcomputed'] = 'As of: {$a}, updates daily.';
@@ -60,7 +60,7 @@ $string['navitems_desc'] = 'One link per line: Title|URL|Group|Capability(option
 $string['navitems_parseerror'] = '{$a} line(s) in the navigation links setting below could not be parsed and were skipped. Each line needs 3 or 4 non-empty "|"-separated parts: Title|URL|Group|Capability(optional).';
 $string['newinperiod'] = 'New in period';
 $string['newinperiod_help'] = 'Counts records (user accounts, cohort members, or courses) created/added within the time range selected at the top of the page. Change the dropdown above to adjust it.';
-$string['newinperiod_link'] = 'https://github.com/tkorner/moodle-local_admindashboard';
+$string['newinperiod_link'] = 'https://github.com/tkorner/moodle-local_admincockpit';
 $string['nonavitemsconfigured'] = 'No navigation links are configured.';
 $string['noschoolsconfigured'] = '0 active {$a} codes are configured.';
 $string['noschoolsconfigured_linktext'] = 'Go to settings';
@@ -69,8 +69,8 @@ $string['onesided_cohortonly'] = '{$a}: a cohort exists, but no matching top-lev
 $string['onesided_intro'] = 'These codes are only maintained on one side (cohort or category), not both, and cannot be selected as an active {$a}:';
 $string['onesided_none'] = 'All cohorts and top-level categories with an idnumber are fully matched - nothing to report here.';
 $string['onesidedwarning'] = 'One-sided matches';
-$string['pluginname'] = 'Admin Dashboard';
-$string['privacy:metadata'] = 'The Admin Dashboard plugin does not store any personal data. All numbers shown are computed on request from existing Moodle core data (users, cohorts, courses, task logs) and are never written anywhere by this plugin.';
+$string['pluginname'] = 'Admin Cockpit';
+$string['privacy:metadata'] = 'The Admin Cockpit plugin does not store any personal data. All numbers shown are computed on request from existing Moodle core data (users, cohorts, courses, task logs) and are never written anywhere by this plugin.';
 $string['purgecache'] = 'Refresh now';
 $string['schoolcard_coursemanagement'] = 'Course management';
 $string['schooltile_activemembers'] = 'Active members';
@@ -86,12 +86,12 @@ $string['signal_cron'] = 'Cron status';
 $string['signal_cron_failedtasks'] = '{$a} failed task(s) in the last 24h.';
 $string['signal_cron_help'] = 'Time since the last cron.php run and the number of scheduled tasks that failed in the last 24 hours. Click the tile to open the scheduled tasks overview.';
 $string['signal_cron_lastrun'] = 'Last run {$a} ago.';
-$string['signal_cron_link'] = 'https://github.com/tkorner/moodle-local_admindashboard';
+$string['signal_cron_link'] = 'https://github.com/tkorner/moodle-local_admincockpit';
 $string['signal_cron_neverrun'] = 'Cron has never run.';
 $string['signal_security'] = 'Security overview';
 $string['signal_security_error'] = '{$a} errors';
 $string['signal_security_help'] = 'Aggregated status of the core security overview checks (the same checks as Site administration → Reports → Security overview). Click the tile to open the full report with details for each check.';
-$string['signal_security_link'] = 'https://github.com/tkorner/moodle-local_admindashboard';
+$string['signal_security_link'] = 'https://github.com/tkorner/moodle-local_admincockpit';
 $string['signal_security_ok'] = '{$a} OK';
 $string['signal_security_warning'] = '{$a} warnings';
 $string['tile_activeusers'] = 'Active users';

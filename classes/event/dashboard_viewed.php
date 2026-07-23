@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The admin dashboard viewed event.
+ * The admin cockpit viewed event.
  *
  * Modelled directly on report_security\event\report_viewed (same
  * situation: a report page being viewed, with no associated database
@@ -27,15 +27,15 @@
  * existing call sites that never set it keep working), used by
  * get_description() and get_url() below.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\event;
+namespace local_admincockpit\event;
 
 /**
- * Event triggered when the admin dashboard page, or one of its drill-down
+ * Event triggered when the admin cockpit page, or one of its drill-down
  * pages, is viewed.
  */
 class dashboard_viewed extends \core\event\base {
@@ -55,7 +55,7 @@ class dashboard_viewed extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventdashboardviewed', 'local_admindashboard');
+        return get_string('eventdashboardviewed', 'local_admincockpit');
     }
 
     /**
@@ -65,7 +65,7 @@ class dashboard_viewed extends \core\event\base {
      */
     public function get_description() {
         $page = $this->other['page'] ?? 'index.php';
-        return "The user with id '$this->userid' viewed the admin dashboard page '$page'.";
+        return "The user with id '$this->userid' viewed the admin cockpit page '$page'.";
     }
 
     /**
@@ -75,6 +75,6 @@ class dashboard_viewed extends \core\event\base {
      */
     public function get_url() {
         $page = $this->other['page'] ?? 'index.php';
-        return new \core\url('/local/admindashboard/' . $page);
+        return new \core\url('/local/admincockpit/' . $page);
     }
 }

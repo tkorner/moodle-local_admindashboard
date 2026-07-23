@@ -17,12 +17,12 @@
 /**
  * Tests for dashboard_page.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\output;
+namespace local_admincockpit\output;
 
 /**
  * Class dashboard_page_test
@@ -41,19 +41,19 @@ final class dashboard_page_test extends \advanced_testcase {
      */
     private function renderer(): \core\output\renderer_base {
         global $PAGE;
-        return $PAGE->get_renderer('local_admindashboard');
+        return $PAGE->get_renderer('local_admincockpit');
     }
 
     /**
      * A freshly installed instance has no 'activeschools' configured - the
      * dashboard must say so cleanly rather than showing empty/broken cards.
      *
-     * @covers \local_admindashboard\output\dashboard_page::export_for_template
+     * @covers \local_admincockpit\output\dashboard_page::export_for_template
      * @return void
      */
     public function test_export_for_template_empty_schools_state(): void {
         $this->resetAfterTest(true);
-        set_config('activeschools', '', 'local_admindashboard');
+        set_config('activeschools', '', 'local_admincockpit');
 
         $context = (new dashboard_page(180))->export_for_template($this->renderer());
 
@@ -67,12 +67,12 @@ final class dashboard_page_test extends \advanced_testcase {
      * built-in default rather than showing an empty navigation section -
      * existing installations keep their links without any manual step.
      *
-     * @covers \local_admindashboard\output\dashboard_page::export_for_template
+     * @covers \local_admincockpit\output\dashboard_page::export_for_template
      * @return void
      */
     public function test_export_for_template_navitems_never_saved_falls_back_to_default(): void {
         $this->resetAfterTest(true);
-        unset_config('navitems', 'local_admindashboard');
+        unset_config('navitems', 'local_admincockpit');
 
         $context = (new dashboard_page(180))->export_for_template($this->renderer());
 
@@ -85,12 +85,12 @@ final class dashboard_page_test extends \advanced_testcase {
      * different, deliberate state from "never configured" - it must show
      * the empty-state hint, not silently fall back to the default links.
      *
-     * @covers \local_admindashboard\output\dashboard_page::export_for_template
+     * @covers \local_admincockpit\output\dashboard_page::export_for_template
      * @return void
      */
     public function test_export_for_template_navitems_explicitly_emptied_shows_empty_state(): void {
         $this->resetAfterTest(true);
-        set_config('navitems', '', 'local_admindashboard');
+        set_config('navitems', '', 'local_admincockpit');
 
         $context = (new dashboard_page(180))->export_for_template($this->renderer());
 
@@ -103,7 +103,7 @@ final class dashboard_page_test extends \advanced_testcase {
      * filtered out; one with no capability at all is always shown to anyone
      * who can already see the dashboard.
      *
-     * @covers \local_admindashboard\output\dashboard_page::export_for_template
+     * @covers \local_admincockpit\output\dashboard_page::export_for_template
      * @return void
      */
     public function test_export_for_template_filters_navitems_by_capability(): void {
@@ -111,7 +111,7 @@ final class dashboard_page_test extends \advanced_testcase {
         set_config(
             'navitems',
             "Everyone|/course/edit.php|Group\nAdmins only|/admin/index.php|Group|moodle/site:config",
-            'local_admindashboard'
+            'local_admincockpit'
         );
 
         $user = $this->getDataGenerator()->create_user();
@@ -136,13 +136,13 @@ final class dashboard_page_test extends \advanced_testcase {
      * in its own most severe (CRITICAL) bucket when lastcronstart was never
      * set (verified directly against that class's get_result()).
      *
-     * @covers \local_admindashboard\output\dashboard_page::export_for_template
+     * @covers \local_admincockpit\output\dashboard_page::export_for_template
      * @return void
      */
     public function test_export_for_template_cron_never_run_is_error_severity(): void {
         $this->resetAfterTest(true);
         unset_config('lastcronstart', 'tool_task');
-        \core_cache\cache::make('local_admindashboard', 'dashboarddata')->purge();
+        \core_cache\cache::make('local_admincockpit', 'dashboarddata')->purge();
 
         $context = (new dashboard_page(180))->export_for_template($this->renderer());
 
@@ -154,7 +154,7 @@ final class dashboard_page_test extends \advanced_testcase {
      * A group whose only item gets filtered out by capability must not
      * appear as an empty card with a heading and nothing under it.
      *
-     * @covers \local_admindashboard\output\dashboard_page::export_for_template
+     * @covers \local_admincockpit\output\dashboard_page::export_for_template
      * @return void
      */
     public function test_export_for_template_drops_groups_left_with_no_visible_items(): void {
@@ -163,7 +163,7 @@ final class dashboard_page_test extends \advanced_testcase {
             'navitems',
             "Admins only|/admin/index.php|Restricted group|moodle/site:config\n" .
                 "Everyone|/course/edit.php|Open group",
-            'local_admindashboard'
+            'local_admincockpit'
         );
 
         $user = $this->getDataGenerator()->create_user();

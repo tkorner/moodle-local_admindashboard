@@ -4,7 +4,7 @@
 # read this file, so a release script (or manual removal before zipping) is still needed there -
 # see README.md "Tests & CI".
 /CLAUDE.md export-ignore
-/SPEC-admindashboard.md export-ignore
-/claude-code-prompt-admindashboard.md export-ignore
+/SPEC-admincockpit.md export-ignore
+/claude-code-prompt-admincockpit.md export-ignore
 /*-CODE-REVIEW-*.md export-ignore
 /cli/verify_*.php export-ignore

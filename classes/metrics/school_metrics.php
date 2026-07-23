@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Per-school metrics for the admin dashboard (SPEC section 3, "Pro Schule").
+ * Per-school metrics for the admin cockpit (SPEC section 3, "Pro Schule").
  *
  * A school is identified by a cohort id and a top-level category id, both
  * resolved beforehand via school_matcher - this class does not do any
@@ -30,12 +30,12 @@
  * Revisit if a school ever wants subcategories excluded or reported
  * separately.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\metrics;
+namespace local_admincockpit\metrics;
 
 /**
  * Membership and course metrics for a single school (cohort + category pair).
@@ -54,7 +54,7 @@ class school_metrics {
      *         when this was last computed, not necessarily this request)
      */
     public static function get_metrics(int $cohortid, int $categoryid, int $timerangedays): \stdClass {
-        $cache = \core_cache\cache::make('local_admindashboard', 'dashboarddata');
+        $cache = \core_cache\cache::make('local_admincockpit', 'dashboarddata');
         $cachekey = "schoolmetrics_{$cohortid}_{$categoryid}_{$timerangedays}";
 
         $cached = $cache->get($cachekey);

@@ -1,4 +1,4 @@
-# SPEC – local_admindashboard
+# SPEC – local_admincockpit
 
 Navigations- und Kennzahlen-Dashboard für Moodle-Administratoren. Bündelt Nutzer-/Kurs-Kennzahlen pro "Schule", Health-Signale mit Call-to-Action sowie Direktlinks zu häufig genutzten Verwaltungsseiten.
 
@@ -115,9 +115,9 @@ Gruppiert nach Aufgabentyp, reine Links ohne Logik:
 
 ## 7. Technischer Aufbau (Vorschlag)
 
-- **Plugin-Typ:** `local_admindashboard` – eigene Admin-Seite (`admin_externalpage`) unter Site administration → Reports, kein Block (vermeidet Block-Regionen-/Theme-Constraints)
+- **Plugin-Typ:** `local_admincockpit` – eigene Admin-Seite (`admin_externalpage`) unter Site administration → Reports, kein Block (vermeidet Block-Regionen-/Theme-Constraints)
 - **Kein eigenes DB-Schema nötig** – alle Werte werden zur Laufzeit berechnet (kein Snapshot-Mechanismus, da bewusst auf `timecreated`-Filter statt historischer Delta-Werte gesetzt)
-- **Capability:** `local/admindashboard:view`, Standard-Kontext System, nur für Nutzer mit Admin-Rolle vorgesehen
+- **Capability:** `local/admincockpit:view`, Standard-Kontext System, nur für Nutzer mit Admin-Rolle vorgesehen
 - **Rendering:** eigener Renderer + Mustache-Templates für Kachel-Layout; Zahlen serverseitig berechnet, keine AJAX-Nachladelogik in v1
 - **Wiederverwendung Core-APIs wo sinnvoll:** z. B. bestehende Security-Overview-Logik referenzieren statt Checks neu zu implementieren
 
@@ -168,7 +168,7 @@ Stand Schritt 12 (siehe CLAUDE.md "Zwingende Recherche-Punkte" für die Fundstel
 |---|---|
 | Caching | Moodle Cache API (MUC), Application-Cache, TTL 1 Tag, plus manueller "Cache jetzt leeren"-Button direkt auf der Dashboard-Seite (nicht nur über die generelle Cache-Verwaltung) |
 | Bootstrap-4-Bereinigung | Vollständige Durchsicht aller Templates auf verbliebene BS4-Klassennamen, Ersatz durch BS5-Äquivalente |
-| Dashboard-Event | `local_admindashboard\event\dashboard_viewed`, erscheint in Site-Logs |
+| Dashboard-Event | `local_admincockpit\event\dashboard_viewed`, erscheint in Site-Logs |
 
 ### Weiterhin unverändert im Backlog (noch keine Entscheidung)
 - Historische Trend-/Delta-Werte über Snapshot-Tabelle

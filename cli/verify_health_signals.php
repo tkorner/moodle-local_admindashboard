@@ -20,9 +20,9 @@
  *
  * Not a substitute for tests/metrics/health_signals_test.php - this script
  * exists to let you eyeball the current instance's numbers immediately, e.g.:
- *   docker exec -it claude-moodle-1 php local/admindashboard/cli/verify_health_signals.php
+ *   docker exec -it claude-moodle-1 php local/admincockpit/cli/verify_health_signals.php
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,7 +31,7 @@ define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../config.php');
 
-use local_admindashboard\metrics\health_signals;
+use local_admincockpit\metrics\health_signals;
 
 echo '== duplicate_emails ==' . PHP_EOL;
 var_export(health_signals::duplicate_emails());

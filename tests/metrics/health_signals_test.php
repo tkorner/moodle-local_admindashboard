@@ -17,12 +17,12 @@
 /**
  * Tests for health_signals.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\metrics;
+namespace local_admincockpit\metrics;
 
 /**
  * Class health_signals_test
@@ -41,7 +41,7 @@ final class health_signals_test extends \advanced_testcase {
      */
     protected function setUp(): void {
         parent::setUp();
-        \core_cache\cache::make('local_admindashboard', 'dashboarddata')->purge();
+        \core_cache\cache::make('local_admincockpit', 'dashboarddata')->purge();
     }
 
     /**
@@ -49,7 +49,7 @@ final class health_signals_test extends \advanced_testcase {
      * and a deleted account that (before deletion) shared one of the emails
      * must not affect the result.
      *
-     * @covers \local_admindashboard\metrics\health_signals::duplicate_emails
+     * @covers \local_admincockpit\metrics\health_signals::duplicate_emails
      * @return void
      */
     public function test_duplicate_emails_finds_shared_addresses(): void {
@@ -81,7 +81,7 @@ final class health_signals_test extends \advanced_testcase {
      * Emails differing only by case are the same mailbox and must be
      * grouped together, not treated as two distinct addresses.
      *
-     * @covers \local_admindashboard\metrics\health_signals::duplicate_emails
+     * @covers \local_admincockpit\metrics\health_signals::duplicate_emails
      * @return void
      */
     public function test_duplicate_emails_matching_is_case_insensitive(): void {
@@ -105,7 +105,7 @@ final class health_signals_test extends \advanced_testcase {
      * Courses with enddate = 0 are reported with their category name;
      * courses with a real enddate are not.
      *
-     * @covers \local_admindashboard\metrics\health_signals::courses_without_enddate
+     * @covers \local_admincockpit\metrics\health_signals::courses_without_enddate
      * @return void
      */
     public function test_courses_without_enddate_finds_open_ended_courses(): void {
@@ -131,7 +131,7 @@ final class health_signals_test extends \advanced_testcase {
      * (they depend on the real php.ini/config.php of whatever environment
      * runs the test), so it verifies the bucketing is lossless instead.
      *
-     * @covers \local_admindashboard\metrics\health_signals::security_overview_summary
+     * @covers \local_admincockpit\metrics\health_signals::security_overview_summary
      * @return void
      */
     public function test_security_overview_summary_accounts_for_every_check(): void {
@@ -147,7 +147,7 @@ final class health_signals_test extends \advanced_testcase {
      * lastrunat reflects tool_task's lastcronstart config, and
      * failedtasks24h only counts failed task_log rows from the last 24h.
      *
-     * @covers \local_admindashboard\metrics\health_signals::cron_status
+     * @covers \local_admincockpit\metrics\health_signals::cron_status
      * @return void
      */
     public function test_cron_status_reads_lastcronstart_and_recent_failures(): void {
@@ -179,8 +179,8 @@ final class health_signals_test extends \advanced_testcase {
 
         $DB->insert_record('task_log', (object) [
             'type' => 0,
-            'component' => 'local_admindashboard',
-            'classname' => '\\local_admindashboard\\fake_task_for_testing',
+            'component' => 'local_admincockpit',
+            'classname' => '\\local_admincockpit\\fake_task_for_testing',
             'userid' => 0,
             'timestart' => $timestart,
             'timeend' => $timestart + 1,

@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer for local_admindashboard.
+ * Renderer for local_admincockpit.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\output;
+namespace local_admincockpit\output;
 
 /**
  * Thin renderer: all data assembly lives in dashboard_page, not here.
@@ -35,6 +35,6 @@ class renderer extends \core\output\plugin_renderer_base {
      * @return string
      */
     public function render_dashboard_page(dashboard_page $page): string {
-        return $this->render_from_template('local_admindashboard/dashboard', $page->export_for_template($this));
+        return $this->render_from_template('local_admincockpit/dashboard', $page->export_for_template($this));
     }
 }

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Main admin dashboard page.
+ * Main admin cockpit page.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,10 +25,10 @@
 require(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
-use local_admindashboard\event\dashboard_viewed;
-use local_admindashboard\output\dashboard_page;
+use local_admincockpit\event\dashboard_viewed;
+use local_admincockpit\output\dashboard_page;
 
-admin_externalpage_setup('local_admindashboard');
+admin_externalpage_setup('local_admincockpit');
 
 // The dropdown only ever offers these four values (matches the settings page); an untrusted GET
 // value outside this list is ignored, falling back to the configured default. The "?: 180" guards
@@ -36,7 +36,7 @@ admin_externalpage_setup('local_admindashboard');
 // on a site that never visited the settings page) - without it, (int) false is 0, which isn't in
 // $allowedtimeranges either, so the allowlist check below would "fall back" to that same broken 0.
 $allowedtimeranges = [30, 90, 180, 360];
-$defaulttimerangedays = (int) (get_config('local_admindashboard', 'timerangedays') ?: 180);
+$defaulttimerangedays = (int) (get_config('local_admincockpit', 'timerangedays') ?: 180);
 $timerangedays = optional_param('timerangedays', $defaulttimerangedays, PARAM_INT);
 if (!in_array($timerangedays, $allowedtimeranges, true)) {
     $timerangedays = $defaulttimerangedays;
@@ -47,10 +47,10 @@ if (!in_array($timerangedays, $allowedtimeranges, true)) {
 // action anyone who can already see the dashboard should reasonably be able to trigger.
 if (optional_param('purgecache', 0, PARAM_BOOL)) {
     require_sesskey();
-    \core_cache\cache::make('local_admindashboard', 'dashboarddata')->purge();
+    \core_cache\cache::make('local_admincockpit', 'dashboarddata')->purge();
     redirect(
-        new \core\url('/local/admindashboard/index.php', ['timerangedays' => $timerangedays]),
-        get_string('cachepurged', 'local_admindashboard'),
+        new \core\url('/local/admincockpit/index.php', ['timerangedays' => $timerangedays]),
+        get_string('cachepurged', 'local_admincockpit'),
         null,
         \core\output\notification::NOTIFY_SUCCESS
     );
@@ -65,7 +65,7 @@ dashboard_viewed::create([
 ])->trigger();
 
 $page = new dashboard_page($timerangedays);
-$renderer = $PAGE->get_renderer('local_admindashboard');
+$renderer = $PAGE->get_renderer('local_admincockpit');
 
 echo $OUTPUT->header();
 echo $renderer->render_dashboard_page($page);

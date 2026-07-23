@@ -17,15 +17,15 @@
 /**
  * Privacy provider file.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\privacy;
+namespace local_admincockpit\privacy;
 
 /**
- * Privacy provider for local_admindashboard.
+ * Privacy provider for local_admincockpit.
  *
  * The plugin has no database schema of its own (a deliberate architecture
  * decision, see CLAUDE.md) - every number shown is computed at request time

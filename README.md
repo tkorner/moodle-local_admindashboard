@@ -1,6 +1,6 @@
-[![Moodle Plugin CI](https://github.com/tkorner/moodle-local_admindashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/tkorner/moodle-local_admindashboard/actions/workflows/ci.yml)
+[![Moodle Plugin CI](https://github.com/tkorner/moodle-local_admincockpit/actions/workflows/ci.yml/badge.svg)](https://github.com/tkorner/moodle-local_admincockpit/actions/workflows/ci.yml)
 
-# Admin Dashboard (Moodle local plugin)
+# Admin Cockpit (Moodle local plugin)
 
 A single-page overview for Moodle administrators: global and per-group user
 metrics, data-hygiene and infrastructure health signals (each with a
@@ -89,20 +89,20 @@ documented at the point of decision in the relevant class's docblock:
 
 ## Capability
 
-`local/admindashboard:view` (system context, granted to the Manager
+`local/admincockpit:view` (system context, granted to the Manager
 archetype by default) gates the dashboard and its two drill-down pages. The
 settings page additionally requires `moodle/site:config`, same as any
 other plugin configuration page.
 
 ## Install
 
-1. Place the folder at `moodle/local/admindashboard`.
+1. Place the folder at `moodle/local/admincockpit`.
 2. Site administration → Notifications, to trigger the install/upgrade.
 3. Configure active school codes, the default time range, what to call a
    "school" on this instance (e.g. Site, Department, Faculty), and
    (optionally) the navigation links shown at the bottom of the dashboard,
-   at Site administration → Plugins → Local plugins → Admin Dashboard.
-4. Open the dashboard at Site administration → Reports → Admin Dashboard.
+   at Site administration → Plugins → Local plugins → Admin Cockpit.
+4. Open the dashboard at Site administration → Reports → Admin Cockpit.
 
 ## Screenshots
 
@@ -130,7 +130,7 @@ turned out to already be installed there, contrary to this project's
 earlier assumption throughout development that only CI could run it):
 
 ```bash
-docker exec -it claude-moodle-1 sh -c "cd /var/www/html && vendor/bin/phpunit --configuration phpunit.xml --testsuite local_admindashboard_testsuite"
+docker exec -it claude-moodle-1 sh -c "cd /var/www/html && vendor/bin/phpunit --configuration phpunit.xml --testsuite local_admincockpit_testsuite"
 ```
 
 `cli/verify_*.php` scripts remain for eyeballing each metrics/matching
@@ -138,11 +138,11 @@ class against the real data of a running instance - a sanity check, not a
 substitute for the tests above:
 
 ```bash
-docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_school_matcher.php
-docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_user_metrics.php
-docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_school_metrics.php
-docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_health_signals.php
-docker exec -it claude-moodle-1 php /var/www/html/public/local/admindashboard/cli/verify_navitems.php
+docker exec -it claude-moodle-1 php /var/www/html/public/local/admincockpit/cli/verify_school_matcher.php
+docker exec -it claude-moodle-1 php /var/www/html/public/local/admincockpit/cli/verify_user_metrics.php
+docker exec -it claude-moodle-1 php /var/www/html/public/local/admincockpit/cli/verify_school_metrics.php
+docker exec -it claude-moodle-1 php /var/www/html/public/local/admincockpit/cli/verify_health_signals.php
+docker exec -it claude-moodle-1 php /var/www/html/public/local/admincockpit/cli/verify_navitems.php
 ```
 
 ## Development

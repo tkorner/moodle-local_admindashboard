@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Global, site-wide user metrics for the admin dashboard.
+ * Global, site-wide user metrics for the admin cockpit.
  *
  * Decision (SPEC section 3, "Nutzer gesamt"): suspended accounts ARE counted
  * as part of "total users". The SPEC defines this metric only as "(nicht
@@ -34,12 +34,12 @@
  * them from its own user listings: neither is a "real" locally managed
  * account.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\metrics;
+namespace local_admincockpit\metrics;
 
 /**
  * Global user metrics: total, recently active, and new-in-period accounts.
@@ -57,7 +57,7 @@ class user_metrics {
      *         not necessarily this request)
      */
     public static function get_metrics(int $timerangedays): \stdClass {
-        $cache = \core_cache\cache::make('local_admindashboard', 'dashboarddata');
+        $cache = \core_cache\cache::make('local_admincockpit', 'dashboarddata');
         $cachekey = 'usermetrics_' . $timerangedays;
 
         $cached = $cache->get($cachekey);

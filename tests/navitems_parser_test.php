@@ -17,12 +17,12 @@
 /**
  * Tests for navitems_parser.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard;
+namespace local_admincockpit;
 
 /**
  * Class navitems_parser_test
@@ -32,7 +32,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * A single well-formed line becomes one group with one item; no
      * capability segment means an empty capability string, not null/unset.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_single_line(): void {
@@ -53,7 +53,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * parses the same as "Title|URL|Group" (matches how core's own
      * custommenuitems parsing trims each segment).
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_trims_segment_whitespace(): void {
@@ -67,7 +67,7 @@ final class navitems_parser_test extends \advanced_testcase {
     /**
      * A 4th segment is captured as the capability string.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_captures_optional_capability(): void {
@@ -81,7 +81,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * Two lines sharing a group name end up as two items under one group
      * object, not two separate groups.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_groups_items_sharing_a_group_name(): void {
@@ -98,7 +98,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * Group order in the output follows first appearance in the setting,
      * not alphabetical or any other implicit ordering.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_group_order_is_first_appearance(): void {
@@ -117,7 +117,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * not counted as errors - so an admin can use them to visually separate
      * groups in the textarea.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_skips_blank_lines_without_counting_them_as_errors(): void {
@@ -136,7 +136,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * Lines with fewer than 3 or more than 4 pipe-separated segments are
      * skipped and counted as errors.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_rejects_wrong_segment_count(): void {
@@ -154,7 +154,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * (after trimming) is still rejected - a structurally valid line with
      * meaningless content is not useful to render.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_rejects_empty_required_segments(): void {
@@ -175,7 +175,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * not left to bubble up as a fatal error for the whole settings/dashboard
      * page over one bad line.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_rejects_unparseable_url(): void {
@@ -191,7 +191,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * becomes the equally-live 'javascript://alert(1)' rather than being
      * rejected by the URL parser itself, so this plugin has to reject it.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_rejects_non_http_scheme(): void {
@@ -206,7 +206,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * no longer installed) is rejected rather than silently hiding the link
      * forever and spamming a debugging() notice on every dashboard view.
      *
-     * @covers \local_admindashboard\navitems_parser::parse
+     * @covers \local_admincockpit\navitems_parser::parse
      * @return void
      */
     public function test_parse_rejects_unknown_capability(): void {
@@ -224,7 +224,7 @@ final class navitems_parser_test extends \advanced_testcase {
      * test - matching the pre-Schritt-7h hardcoded export_nav_groups()'s
      * conditional presence.
      *
-     * @covers \local_admindashboard\navitems_parser::default_value
+     * @covers \local_admincockpit\navitems_parser::default_value
      * @return void
      */
     public function test_default_value_parses_cleanly_and_matches_installed_plugins(): void {
@@ -244,7 +244,7 @@ final class navitems_parser_test extends \advanced_testcase {
 
         $pluginman = \core\plugin_manager::instance();
         $mergeuserslabel = get_string('pluginname', 'tool_mergeusers');
-        $boostunionlabel = get_string('boostunionsettings', 'local_admindashboard');
+        $boostunionlabel = get_string('boostunionsettings', 'local_admincockpit');
 
         $this->assertSame(
             (bool) $pluginman->get_plugin_info('tool_mergeusers'),

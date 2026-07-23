@@ -18,12 +18,12 @@
  * Ad-hoc visual check of navitems_parser::parse() against the running
  * instance's actual 'navitems' setting (or the built-in default, if it has
  * never been saved):
- *   docker exec -it claude-moodle-1 php local/admindashboard/cli/verify_navitems.php
+ *   docker exec -it claude-moodle-1 php local/admincockpit/cli/verify_navitems.php
  *
  * Does not simulate capability filtering - that needs a real $USER and
  * happens in dashboard_page.php at render time, not here.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,9 +32,9 @@ define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../config.php');
 
-use local_admindashboard\navitems_parser;
+use local_admincockpit\navitems_parser;
 
-$raw = get_config('local_admindashboard', 'navitems');
+$raw = get_config('local_admincockpit', 'navitems');
 if ($raw === false) {
     echo "'navitems' has never been saved - showing the built-in default value instead." . PHP_EOL;
     $raw = navitems_parser::default_value();

@@ -20,9 +20,9 @@
  *
  * Not a substitute for tests/school_matcher_test.php - this script exists to
  * let you eyeball the current instance's matching result immediately, e.g.:
- *   docker exec -it claude-moodle-1 php local/admindashboard/cli/verify_school_matcher.php
+ *   docker exec -it claude-moodle-1 php local/admincockpit/cli/verify_school_matcher.php
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,7 +31,7 @@ define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../config.php');
 
-use local_admindashboard\school_matcher;
+use local_admincockpit\school_matcher;
 
 $result = school_matcher::get_matches();
 

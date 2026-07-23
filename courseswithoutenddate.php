@@ -17,25 +17,25 @@
 /**
  * Drill-down list for the "courses without an enddate" health signal.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require(__DIR__ . '/../../config.php');
 
-use local_admindashboard\event\dashboard_viewed;
-use local_admindashboard\metrics\health_signals;
+use local_admincockpit\event\dashboard_viewed;
+use local_admincockpit\metrics\health_signals;
 
 require_login();
 $context = \core\context\system::instance();
-require_capability('local/admindashboard:view', $context);
+require_capability('local/admincockpit:view', $context);
 
-$PAGE->set_url(new \core\url('/local/admindashboard/courseswithoutenddate.php'));
+$PAGE->set_url(new \core\url('/local/admincockpit/courseswithoutenddate.php'));
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title(get_string('courseswithoutenddate', 'local_admindashboard'));
-$PAGE->set_heading(get_string('pluginname', 'local_admindashboard'));
+$PAGE->set_title(get_string('courseswithoutenddate', 'local_admincockpit'));
+$PAGE->set_heading(get_string('pluginname', 'local_admincockpit'));
 
 dashboard_viewed::create([
     'context' => $context,
@@ -45,14 +45,14 @@ dashboard_viewed::create([
 $signal = health_signals::courses_without_enddate();
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('courseswithoutenddate', 'local_admindashboard'));
+echo $OUTPUT->heading(get_string('courseswithoutenddate', 'local_admincockpit'));
 
 if (empty($signal->details)) {
-    echo $OUTPUT->notification(get_string('courseswithoutenddate_none', 'local_admindashboard'), 'success');
+    echo $OUTPUT->notification(get_string('courseswithoutenddate_none', 'local_admincockpit'), 'success');
 } else {
     if ($signal->detailstruncated) {
         echo $OUTPUT->notification(
-            get_string('courseswithoutenddate_truncated', 'local_admindashboard', $signal->count),
+            get_string('courseswithoutenddate_truncated', 'local_admincockpit', $signal->count),
             'info'
         );
     }
@@ -72,8 +72,8 @@ if (empty($signal->details)) {
 }
 
 echo \core\output\html_writer::link(
-    new \core\url('/local/admindashboard/index.php'),
-    get_string('backtodashboard', 'local_admindashboard')
+    new \core\url('/local/admincockpit/index.php'),
+    get_string('backtodashboard', 'local_admincockpit')
 );
 
 echo $OUTPUT->footer();

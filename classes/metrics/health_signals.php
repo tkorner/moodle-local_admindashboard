@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Health signals for the admin dashboard (SPEC section 4).
+ * Health signals for the admin cockpit (SPEC section 4).
  *
  * security_overview_summary() and cron_status() deliberately reuse existing
  * core infrastructure instead of re-implementing checks:
@@ -34,15 +34,15 @@
  *   no task happened to be due. Failed-task counting uses task_log.result
  *   (0 = pass, 1 = fail per its install.xml comment).
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\metrics;
+namespace local_admincockpit\metrics;
 
 /**
- * Data hygiene and infrastructure health signals for the admin dashboard.
+ * Data hygiene and infrastructure health signals for the admin cockpit.
  */
 class health_signals {
     /** @var int Hard cap on courses_without_enddate()'s drill-down rows - enddate=0 is Moodle's own
@@ -297,7 +297,7 @@ class health_signals {
      *         computedat set
      */
     private static function from_cache(string $cachekey, callable $computer): \stdClass {
-        $cache = \core_cache\cache::make('local_admindashboard', 'dashboarddata');
+        $cache = \core_cache\cache::make('local_admincockpit', 'dashboarddata');
 
         $cached = $cache->get($cachekey);
         if ($cached !== false) {

@@ -17,12 +17,12 @@
 /**
  * Tests for user_metrics.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\metrics;
+namespace local_admincockpit\metrics;
 
 /**
  * Class user_metrics_test
@@ -47,7 +47,7 @@ final class user_metrics_test extends \advanced_testcase {
      * @return void
      */
     private function purge_cache(): void {
-        \core_cache\cache::make('local_admindashboard', 'dashboarddata')->purge();
+        \core_cache\cache::make('local_admincockpit', 'dashboarddata')->purge();
     }
 
     /**
@@ -65,7 +65,7 @@ final class user_metrics_test extends \advanced_testcase {
      * be counted; suspended accounts must be counted (see docblock decision
      * in user_metrics).
      *
-     * @covers \local_admindashboard\metrics\user_metrics::get_metrics
+     * @covers \local_admincockpit\metrics\user_metrics::get_metrics
      * @return void
      */
     public function test_total_users_excludes_deleted_guest_and_remote_but_keeps_suspended(): void {
@@ -91,7 +91,7 @@ final class user_metrics_test extends \advanced_testcase {
      * Only accounts with lastaccess in the last 4 weeks count as active;
      * never-logged-in (lastaccess = 0) and stale accounts do not.
      *
-     * @covers \local_admindashboard\metrics\user_metrics::get_metrics
+     * @covers \local_admincockpit\metrics\user_metrics::get_metrics
      * @return void
      */
     public function test_active_users_counts_lastaccess_within_4_weeks(): void {
@@ -112,7 +112,7 @@ final class user_metrics_test extends \advanced_testcase {
     /**
      * Only accounts created within the configured time range count as new.
      *
-     * @covers \local_admindashboard\metrics\user_metrics::get_metrics
+     * @covers \local_admincockpit\metrics\user_metrics::get_metrics
      * @return void
      */
     public function test_new_users_counts_timecreated_within_period(): void {

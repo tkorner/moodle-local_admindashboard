@@ -17,12 +17,12 @@
 /**
  * Tests for dashboard_viewed.
  *
- * @package   local_admindashboard
+ * @package   local_admincockpit
  * @copyright 2026 Thomas Korner <thomas.korner@edu.zh.ch>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_admindashboard\event;
+namespace local_admincockpit\event;
 
 /**
  * Class dashboard_viewed_test
@@ -34,7 +34,7 @@ final class dashboard_viewed_test extends \advanced_testcase {
      * at index.php - so the one existing call site that predates that
      * sharing keeps working unchanged.
      *
-     * @covers \local_admindashboard\event\dashboard_viewed
+     * @covers \local_admincockpit\event\dashboard_viewed
      * @return void
      */
     public function test_defaults_to_index_page_when_none_given(): void {
@@ -43,7 +43,7 @@ final class dashboard_viewed_test extends \advanced_testcase {
         $event = dashboard_viewed::create(['context' => \core\context\system::instance()]);
         $event->trigger();
 
-        $this->assertStringContainsString('/local/admindashboard/index.php', $event->get_url()->out(false));
+        $this->assertStringContainsString('/local/admincockpit/index.php', $event->get_url()->out(false));
         $this->assertStringContainsString('index.php', $event->get_description());
     }
 
@@ -52,7 +52,7 @@ final class dashboard_viewed_test extends \advanced_testcase {
      * from get_url()/get_description(), not the hardcoded index.php this
      * event used to always point at regardless of which page fired it.
      *
-     * @covers \local_admindashboard\event\dashboard_viewed
+     * @covers \local_admincockpit\event\dashboard_viewed
      * @return void
      */
     public function test_reports_the_page_that_was_actually_viewed(): void {
@@ -64,7 +64,7 @@ final class dashboard_viewed_test extends \advanced_testcase {
         ]);
         $event->trigger();
 
-        $this->assertStringContainsString('/local/admindashboard/duplicateemails.php', $event->get_url()->out(false));
+        $this->assertStringContainsString('/local/admincockpit/duplicateemails.php', $event->get_url()->out(false));
         $this->assertStringContainsString('duplicateemails.php', $event->get_description());
     }
 }
