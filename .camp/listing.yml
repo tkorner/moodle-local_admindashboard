@@ -1,0 +1,27 @@
+# .camp/listing.yml — lives in this repository, not the camp-index (RFC §4.1).
+# Update with an ordinary commit; camp ingests and hash-pins it at each
+# tagged release.
+
+name: Admin Cockpit
+summary: >-
+  Admin overview page for Moodle: per-school user/course metrics, health
+  signals with click-through actions, and admin shortcuts.
+description: |
+  Getting a picture of a Moodle instance's health today means visiting half a
+  dozen different pages: user counts, cohort membership per group, the
+  security overview report, the scheduled tasks page, and so on. Admin
+  Cockpit puts the numbers that matter on one page and makes every health
+  signal clickable — a number on its own is a statistic, a number with a
+  click-target is something you can act on.
+
+  - Per-school (cohort + top-level category, matched by idnumber) user and
+    course metrics
+  - Health signals (security overview, cron/task status, and more) that are
+    always a number plus a link to fix or investigate
+  - A grouped set of shortcuts to the admin pages you end up needing most
+labels:
+  - fully-free
+category: administration
+links:
+  docs: https://github.com/tkorner/moodle-local_admincockpit#readme
+  issues: https://github.com/tkorner/moodle-local_admincockpit/issues
